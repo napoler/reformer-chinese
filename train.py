@@ -277,8 +277,8 @@ def main():
         print('time: {}'.format(now))
         x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
         random.shuffle(x)
-        piece_num = 0
-        for i in x:
+        # piece_num = 0
+        for piece_num, i in enumerate( x):
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
             tokens = line.split()
@@ -318,7 +318,7 @@ def main():
                 optimizer.step()
                 # scheduler.step()
                 model.zero_grad()
-                print("loss",loss.item())
+                print("epoch:",epoch + 1," piece_num:",piece_num," step:",step," loss:",loss.item())
                 #  forward pass
 
         torch.save(model.state_dict(), model_path)
