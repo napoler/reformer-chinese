@@ -171,12 +171,12 @@ def main():
 
     model = ReformerLM(
         num_tokens= 13137,
-        dim = 128,
+        dim = 1024,
         depth = 12,
         max_seq_len = 4096,
         lsh_dropout = 0.1,
         causal = True,
-        full_attn_thres = 128
+        full_attn_thres = 1024
     )
 
     # 0 is used for padding and no loss to be calculated on it
@@ -300,14 +300,14 @@ def main():
                 batch_labels = []
                 batch_inputs = []
                 for ids in batch:
-                    int_ids_for_labels = [int(x) for x in ids]
+                    # int_ids_for_labels = [int(x) for x in ids]
                     int_ids_for_inputs = [int(x) for x in ids]
-                    batch_labels.append(int_ids_for_labels)
+                    # batch_labels.append(int_ids_for_labels)
                     batch_inputs.append(int_ids_for_inputs)
                 if device=='cuda':
-                    batch_labels = torch.tensor(batch_labels).long().cuda()
+                    batch_inputs = torch.tensor(batch_inputs).long().to("cuda")
                 else:
-                    batch_labels = torch.tensor(batch_labels).long()
+                    batch_inputs = torch.tensor(batch_inputs).long()
                 # batch_inputs = torch.tensor(batch_inputs).long().to(device)
                 # print(batch_labels)
 
