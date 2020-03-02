@@ -149,25 +149,6 @@ def main():
                     full_tokenizer=full_tokenizer, min_length=min_length)
         print('files built')
 
-    # if not args.pretrained_model:
-    #     model = transformers.modeling_gpt2.GPT2LMHeadModel(config=model_config)
-    # else:
-    #     model = transformers.modeling_gpt2.GPT2LMHeadModel.from_pretrained(args.pretrained_model)
-    # model.train()
-    # model.to(device)
-
-    # num_parameters = 0
-
-    # parameters = model.parameters()
-    # for parameter in parameters:
-    #     num_parameters += parameter.numel()
-    # print('number of parameters: {}'.format(num_parameters))
-
-
-
-
-
-
 
 
     model = ReformerLM(
@@ -186,7 +167,7 @@ def main():
     else:
         model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
     model.train()
-    num_train_epochs=30
+
     weight_decay=0.0
     # learning_rate=5e-5
     adam_epsilon=1e-8
@@ -237,37 +218,6 @@ def main():
         model.load_state_dict(torch.load(model_path))
     loss_fn=nn.CrossEntropyLoss()
 
-
-
-
-    # optimizer = transformers.AdamW(model.parameters(), lr=lr, correct_bias=True)
-    # scheduler = transformers.WarmupLinearSchedule(optimizer, warmup_steps=warmup_steps,
-    #                                                       t_total=total_steps)
-    # #修改加载旧有的参数
-    # if os.path.exists(args.pretrained_model + '/scheduler.pt'):
-    #     # 加载旧有参数
-    #     scheduler.load_state_dict( torch.load(args.pretrained_model + '/scheduler.pt'))
-    # if os.path.exists(args.pretrained_model + '/optimizer.pt'):
-    #     # 加载旧有参数
-    #     optimizer.load_state_dict( torch.load(args.pretrained_model + '/optimizer.pt'))
-
-
-
-
-    # if fp16:
-    #     try:
-    #         from apex import amp
-    #     except ImportError:
-    #         raise ImportError("Please install apex from https://www.github.com/nvidia/apex to use fp16 training.")
-    #     model, optimizer = amp.initialize(model, optimizer, opt_level=fp16_opt_level)
-
-    # if torch.cuda.device_count() > 1:
-    #     print("Let's use", torch.cuda.device_count(), "GPUs!")
-    #     model = DataParallel(model)
-    #     multi_gpu = True
-
-
-
     
     print('starting training')
     overall_step = 0
@@ -279,7 +229,7 @@ def main():
         x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
         random.shuffle(x)
         # piece_num = 0
-        gradient_accumulation_run=1
+        gradient_accumulation_run=0
         for piece_num, i in enumerate( x):
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
@@ -319,11 +269,11 @@ def main():
                 loss = loss/gradient_accumulation   
                 loss.backward()
                 optimizer.step()
-                if((gradient_accumulation_run)%gradient_accumulation)==0:
+                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
                     # optimizer the net
                     scheduler.step()        # update parameters of net
                     model.zero_grad()   # reset gradient
-                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item())
                     #  forward pass
                 gradient_accumulation_run=gradient_accumulation_run+1
 
