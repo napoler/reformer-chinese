@@ -70,7 +70,7 @@ def main():
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=1, type=int, required=False, help='训练batch size')
-    parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
+    parser.add_argument('--lr', default=5e-5, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
@@ -188,7 +188,7 @@ def main():
     model.train()
     num_train_epochs=30
     weight_decay=0.0
-    learning_rate=5e-5
+    # learning_rate=5e-5
     adam_epsilon=1e-8
     # warmup_steps=0
     max_grad_norm=1.0
@@ -221,8 +221,8 @@ def main():
 
     # total_steps = len(x_train_text)/gradient_accumulation_steps * num_train_epochs
     # t_total=3/1*3
-    optimizer = AdamW(model.parameters(), lr=lr, correct_bias=True)
-    optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate, eps=adam_epsilon)
+    # optimizer = AdamW(model.parameters(), lr=lr, correct_bias=True)
+    optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=adam_epsilon)
     scheduler = get_linear_schedule_with_warmup( optimizer=optimizer, num_warmup_steps=warmup_steps,num_training_steps=total_steps)
 
 
