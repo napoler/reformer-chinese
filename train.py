@@ -60,7 +60,7 @@ def auto_encode(sentence_0,tokenizer):
   return inputs_1['input_ids']
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--device', default='0,1,2,3', type=str, required=False, help='设置使用哪些显卡')
+    parser.add_argument('--device', default='cuda', type=str, required=False, help='设置使用哪些显卡')
     parser.add_argument('--model_config', default='config/model_config_small.json', type=str, required=False,
                         help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small_terry_ai.txt', type=str, required=False, help='选择词库')
@@ -109,9 +109,10 @@ def main():
     full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
     # full_tokenizer.max_len = n_ctx
     n_ctx=1000
+    # if args.device==''
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     #强制使用cpu
-    device = "cpu"
+    device = args.device
 
     print('using device:', device)
 
@@ -170,12 +171,12 @@ def main():
 
     model = ReformerLM(
         num_tokens= 13137,
-        dim = 512,
+        dim = 1024,
         depth = 12,
         max_seq_len = 4096,
         lsh_dropout = 0.1,
         causal = True,
-        full_attn_thres = 512
+        full_attn_thres = 1024
     )
 
     # 0 is used for padding and no loss to be calculated on it
