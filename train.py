@@ -127,8 +127,8 @@ def main():
     stride = args.stride
     gradient_accumulation = args.gradient_accumulation
     
-    fp16 = args.fp16  # 不支持半精度的显卡请勿打开
-    fp16_opt_level = args.fp16_opt_level
+    # fp16 = args.fp16  # 不支持半精度的显卡请勿打开
+    # fp16_opt_level = args.fp16_opt_level
     max_grad_norm = args.max_grad_norm
     num_pieces = args.num_pieces
     min_length = args.min_length
@@ -319,7 +319,7 @@ def main():
                 loss = loss/gradient_accumulation   
                 loss.backward()
                 optimizer.step()
-                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
+                if((gradient_accumulation_run)%gradient_accumulation)==0:
                     # optimizer the net
                     scheduler.step()        # update parameters of net
                     model.zero_grad()   # reset gradient
