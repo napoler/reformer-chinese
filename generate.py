@@ -1,0 +1,56 @@
+from torch
+
+from reformer_pytorch import ReformerLM
+from reformer_pytorch.generative_tools import TrainingWrapper
+import torch
+from transformers import *
+
+pretrained_weights = 'cache/vocab_small_terry_ai.txt'
+device='cuda'
+output_dir='model'
+
+
+tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
+model = ReformerLM(
+    num_tokens= 13137,
+    dim = 1024,
+    depth = 12,
+    max_seq_len = 4096,
+    lsh_dropout = 0.1,
+    causal = True,
+    full_attn_thres = 1024
+)
+
+model_path=os.path.join(output_dir, 'model.pt')
+
+if device=='cuda':
+    model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).cuda()
+else:
+    model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
+
+if os.path.isfile(model_path):
+    # if so, load them
+    model.load_state_dict(torch.load(model_path))
+
+# sentence_0 = "你是谁啊"
+def auto_encode(sentence_0):
+  # sentence_1 = "我是谁啊"
+  sentence_1=None
+  inputs_1 = tokenizer.encode_plus(sentence_0, sentence_1, add_special_tokens=True, return_tensors='pt')
+  return inputs_1['input_ids']
+
+
+
+def get(start_text):
+  """
+  获取预测文本
+  """
+  # start_text=x_train_text[0][:5]
+  initial =auto_encode(start_text)
+  sample = model.generate(initial, 30, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
+  # print(sample)
+  # print(sample.shape) # (1, <=100) token ids
+  text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
+  return text
+
+get(start_text)

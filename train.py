@@ -318,7 +318,7 @@ def main():
                 optimizer.step()
                 # scheduler.step()
                 model.zero_grad()
-                print("epoch:",epoch + 1," piece_num:",piece_num," step:",step," loss:",loss.item())
+                print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
                 #  forward pass
 
         torch.save(model.state_dict(), model_path)
