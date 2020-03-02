@@ -74,7 +74,7 @@ def main():
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
-    parser.add_argument('--gradient_accumulation', default=1, type=int, required=False, help='梯度积累')
+    parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
     parser.add_argument('--max_grad_norm', default=1.0, type=float, required=False)
@@ -126,6 +126,7 @@ def main():
     log_step = args.log_step
     stride = args.stride
     gradient_accumulation = args.gradient_accumulation
+    
     fp16 = args.fp16  # 不支持半精度的显卡请勿打开
     fp16_opt_level = args.fp16_opt_level
     max_grad_norm = args.max_grad_norm
@@ -192,7 +193,7 @@ def main():
     warmup_steps=0
     max_grad_norm=1.0
     max_steps=-1
-    gradient_accumulation_steps=1
+    # gradient_accumulation_steps=10
     logging_steps=1000
     save_steps=10000
     no_decay = ['bias', 'LayerNorm.weight']
@@ -278,6 +279,7 @@ def main():
         x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
         random.shuffle(x)
         # piece_num = 0
+        gradient_accumulation_run=1
         for piece_num, i in enumerate( x):
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
@@ -316,6 +318,12 @@ def main():
                 loss = model(batch_inputs, return_loss = True)
                 loss.backward()
                 optimizer.step()
+                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
+                    # optimizer the net
+                    scheduler.step()        # update parameters of net
+                    model.zero_grad()   # reset gradient
+                gradient_accumulation_run=gradient_accumulation_run+1
+
                 # scheduler.step()
                 # model.zero_grad()
                 print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
