@@ -190,7 +190,7 @@ def main():
     weight_decay=0.0
     learning_rate=5e-5
     adam_epsilon=1e-8
-    warmup_steps=0
+    # warmup_steps=0
     max_grad_norm=1.0
     max_steps=-1
     # gradient_accumulation_steps=10
@@ -316,18 +316,20 @@ def main():
                 # print(len(batch_inputs))
                 # print(batch_inputs)
                 loss = model(batch_inputs, return_loss = True)
+                loss = loss/gradient_accumulation_run   
                 loss.backward()
                 optimizer.step()
                 if((gradient_accumulation_run+1)%gradient_accumulation)==0:
                     # optimizer the net
                     scheduler.step()        # update parameters of net
                     model.zero_grad()   # reset gradient
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
+                    #  forward pass
                 gradient_accumulation_run=gradient_accumulation_run+1
 
                 # scheduler.step()
                 # model.zero_grad()
-                print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
-                #  forward pass
+
 
             torch.save(model.state_dict(), model_path)
             torch.save(optimizer.state_dict(), optimizer_path)
