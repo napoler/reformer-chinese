@@ -69,7 +69,7 @@ def main():
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=32, type=int, required=False, help='训练batch size')
+    parser.add_argument('--batch_size', default=1, type=int, required=False, help='训练batch size')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
@@ -96,7 +96,7 @@ def main():
     # else:
     #     from tokenizations import tokenization_bert
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = args.device  # 此处设置程序使用哪些显卡
+    os.environ["CUDA_VISIBLE_DEVICES"] = '0,1,2,3' # 此处设置程序使用哪些显卡
 
     # model_config = transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
     # print('config:\n' + model_config.to_json_string())
@@ -171,16 +171,19 @@ def main():
 
     model = ReformerLM(
         num_tokens= 13137,
-        dim = 1024,
+        dim = 128,
         depth = 12,
         max_seq_len = 4096,
         lsh_dropout = 0.1,
         causal = True,
-        full_attn_thres = 1024
+        full_attn_thres = 128
     )
 
     # 0 is used for padding and no loss to be calculated on it
-    model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).to(device)
+    if device=='cuda':
+        model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).cuda()
+    else:
+        model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
     model.train()
     num_train_epochs=30
     weight_decay=0.0
@@ -301,8 +304,11 @@ def main():
                     int_ids_for_inputs = [int(x) for x in ids]
                     batch_labels.append(int_ids_for_labels)
                     batch_inputs.append(int_ids_for_inputs)
-                batch_labels = torch.tensor(batch_labels).long().to(device)
-                batch_inputs = torch.tensor(batch_inputs).long().to(device)
+                if device=='cuda':
+                    batch_labels = torch.tensor(batch_labels).long().cuda()
+                else:
+                    batch_labels = torch.tensor(batch_labels).long()
+                # batch_inputs = torch.tensor(batch_inputs).long().to(device)
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
