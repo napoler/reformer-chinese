@@ -220,7 +220,7 @@ def main():
 
     # total_steps = len(x_train_text)/gradient_accumulation_steps * num_train_epochs
     # t_total=3/1*3
-    optimizer = AdamW(model.parameters(), lr=0.001, correct_bias=True)
+    optimizer = AdamW(model.parameters(), lr=lr, correct_bias=True)
     optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate, eps=adam_epsilon)
     scheduler = get_linear_schedule_with_warmup( optimizer=optimizer, num_warmup_steps=warmup_steps,num_training_steps=total_steps)
 
