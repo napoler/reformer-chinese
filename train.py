@@ -230,7 +230,7 @@ def main():
         random.shuffle(x)
         # piece_num = 0
         gradient_accumulation_run=0
-        for piece_num, i in enumerate( x):
+        for piece_num, i in tqdm(enumerate( x)):
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
             tokens = line.split()
