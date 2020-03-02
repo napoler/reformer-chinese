@@ -316,7 +316,7 @@ def main():
                 # print(len(batch_inputs))
                 # print(batch_inputs)
                 loss = model(batch_inputs, return_loss = True)
-                loss = loss/gradient_accumulation_run   
+                loss = loss/gradient_accumulation   
                 loss.backward()
                 optimizer.step()
                 if((gradient_accumulation_run+1)%gradient_accumulation)==0:
