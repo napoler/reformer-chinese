@@ -317,13 +317,13 @@ def main():
                 loss.backward()
                 optimizer.step()
                 # scheduler.step()
-                model.zero_grad()
+                # model.zero_grad()
                 print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step,'/',total_steps," loss:",loss.item())
                 #  forward pass
 
-        torch.save(model.state_dict(), model_path)
-        torch.save(optimizer.state_dict(), optimizer_path)
-        torch.save(scheduler.state_dict(), scheduler_path)
+            torch.save(model.state_dict(), model_path)
+            torch.save(optimizer.state_dict(), optimizer_path)
+            torch.save(scheduler.state_dict(), scheduler_path)
 
 if __name__ == '__main__':
     main()

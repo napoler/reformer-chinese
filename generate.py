@@ -1,12 +1,11 @@
-from torch
-
+import argparse
 from reformer_pytorch import ReformerLM
 from reformer_pytorch.generative_tools import TrainingWrapper
 import torch
 from transformers import *
-
+import os
 pretrained_weights = 'cache/vocab_small_terry_ai.txt'
-device='cuda'
+device='cpu'
 output_dir='model'
 
 
@@ -41,16 +40,28 @@ def auto_encode(sentence_0):
 
 
 
-def get(start_text):
+def get(start_text,length=30):
   """
   获取预测文本
   """
   # start_text=x_train_text[0][:5]
   initial =auto_encode(start_text)
-  sample = model.generate(initial, 30, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
+  sample = model.generate(initial, length, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
   # print(sample)
   # print(sample.shape) # (1, <=100) token ids
   text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
   return text
 
-get(start_text)
+# get(start_text)
+
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--text', default='狗', type=str, required=False, help='设置使用哪些显卡')
+
+
+# args = parser.parse_args()
+
+while True:
+    start_text=input("输入开始词语:")
+    pre_text=get(start_text)
+    print("".join(pre_text))
