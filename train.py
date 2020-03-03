@@ -161,6 +161,9 @@ def main():
         full_attn_thres = 1024
     )
 
+    if os.path.isfile(model_path):
+        # if so, load them
+        model.load_state_dict(torch.load(model_path))
     # 0 is used for padding and no loss to be calculated on it
     if device=='cuda':
         model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).cuda()
@@ -206,16 +209,13 @@ def main():
     optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=adam_epsilon)
     scheduler = get_linear_schedule_with_warmup( optimizer=optimizer, num_warmup_steps=warmup_steps,num_training_steps=total_steps)
 
-
-
     # # checking if another optimizer/scheduler exists
     if os.path.isfile(optimizer_path) and os.path.isfile(scheduler_path):
         # if so, load them
         optimizer.load_state_dict(torch.load(optimizer_path))
         scheduler.load_state_dict(torch.load(scheduler_path))
-    if os.path.isfile(model_path):
-        # if so, load them
-        model.load_state_dict(torch.load(model_path))
+
+
     loss_fn=nn.CrossEntropyLoss()
 
     
