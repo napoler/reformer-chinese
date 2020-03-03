@@ -171,7 +171,8 @@ def main():
     if os.path.isfile(model_path):
         # if so, load them
         model.load_state_dict(torch.load(model_path))
-    model.train()
+    else:   
+        model.train()
 
     weight_decay=0.0
     # learning_rate=5e-5
@@ -292,7 +293,8 @@ def main():
                 # scheduler.step()
                 # model.zero_grad()
 
-
+            model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
+            torch.save(model.cpu().state_dict(), model_cpu_path)
             torch.save(model.state_dict(), model_path)
             torch.save(optimizer.state_dict(), optimizer_path)
             torch.save(scheduler.state_dict(), scheduler_path)
