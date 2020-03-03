@@ -161,14 +161,16 @@ def main():
         full_attn_thres = 1024
     )
 
-    if os.path.isfile(model_path):
-        # if so, load them
-        model.load_state_dict(torch.load(model_path))
+
     # 0 is used for padding and no loss to be calculated on it
     if device=='cuda':
         model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).cuda()
     else:
         model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
+
+    if os.path.isfile(model_path):
+        # if so, load them
+        model.load_state_dict(torch.load(model_path))
     model.train()
 
     weight_decay=0.0
