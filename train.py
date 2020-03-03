@@ -69,7 +69,7 @@ def main():
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=1, type=int, required=False, help='训练batch size')
+    parser.add_argument('--batch_size', default=2, type=int, required=False, help='训练batch size')
     parser.add_argument('--lr', default=5e-5, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
@@ -252,20 +252,27 @@ def main():
                 batch_labels = []
                 batch_inputs = []
                 for ids in batch:
-                    # int_ids_for_labels = [int(x) for x in ids]
+                    int_ids_for_labels = [int(x) for x in ids]
                     int_ids_for_inputs = [int(x) for x in ids]
-                    # batch_labels.append(int_ids_for_labels)
+                    batch_labels.append(int_ids_for_labels)
                     batch_inputs.append(int_ids_for_inputs)
                 if device=='cuda':
                     batch_inputs = torch.tensor(batch_inputs).long().to("cuda")
+                    batch_labels = torch.tensor(batch_labels).long().to("cuda")
                 else:
                     batch_inputs = torch.tensor(batch_inputs).long()
+                    batch_labels = torch.tensor(batch_labels).long()
                 # batch_inputs = torch.tensor(batch_inputs).long().to(device)
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
                 # print(batch_inputs)
-                loss = model(batch_inputs, return_loss = True)
+                # loss = model(batch_inputs, return_loss = True)
+                pred = model(batch_inputs)
+                loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_labels.view(-1))
+                # print("计算loss",mlm_loss.item(),'返回loss',loss.item())
+                # print('返回loss',loss.item())
+  
                 loss = loss/gradient_accumulation   
                 loss.backward()
 
@@ -273,6 +280,8 @@ def main():
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
+                    optimizer.zero_grad()        # update parameters of net
+                    scheduler.zero_grad()        # update parameters of net
                     model.zero_grad()   # reset gradient
                     print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item())
                     #  forward pass

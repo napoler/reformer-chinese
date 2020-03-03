@@ -46,9 +46,10 @@ def get(start_text,length=30):
   """
   # start_text=x_train_text[0][:5]
   initial =auto_encode(start_text)
+  print('输入')
   sample = model.generate(initial, length, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
   # print(sample)
-  # print(sample.shape) # (1, <=100) token ids
+  print(sample.shape) # (1, <=100) token ids
   text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
   return text
 
