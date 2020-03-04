@@ -235,6 +235,7 @@ def main():
         # piece_num = 0
         gradient_accumulation_run=0
         for piece_num, i in tqdm(enumerate( x)):
+
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
             tokens = line.split()
@@ -287,13 +288,15 @@ def main():
                     # optimizer.zero_grad()        # update parameters of net
                     # scheduler.zero_grad()        # update parameters of net
                     model.zero_grad()   # reset gradient
-                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item())
+                    end = datetime.now()
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
                     #  forward pass
                 gradient_accumulation_run=gradient_accumulation_run+1
 
                 # scheduler.step()
                 # model.zero_grad()
-
+            # end = datetime.now()
+            # print("one piece:",end-now," s")
             model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
             torch.save(model.cpu().state_dict(), model_cpu_path)
             torch.save(model.state_dict(), model_path)
