@@ -284,9 +284,9 @@ def main():
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
-                    optimizer.zero_grad()        # update parameters of net
+                    # optimizer.zero_grad()        # update parameters of net
                     # scheduler.zero_grad()        # update parameters of net
-                    # model.zero_grad()   # reset gradient
+                    model.zero_grad()   # reset gradient
                     print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item())
                     #  forward pass
                 gradient_accumulation_run=gradient_accumulation_run+1
