@@ -272,9 +272,9 @@ def main():
 
                 # print(len(batch_inputs))
                 # print(batch_inputs)
-                loss = model(batch_inputs, return_loss = True)
-                # pred = model(batch_inputs)
-                # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
+                # loss = model(batch_inputs, return_loss = True)
+                pred = model(batch_inputs)
+                loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
                 # print("计算loss",mlm_loss.item(),'返回loss',loss.item())
                 # print('返回loss',loss.item())
   
