@@ -172,7 +172,8 @@ def main():
         # if so, load them
         model.load_state_dict(torch.load(model_path))
     else:   
-        model.train()
+        pass
+    model.train()
 
     weight_decay=0.0
     # learning_rate=5e-5
