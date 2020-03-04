@@ -172,8 +172,8 @@ def main():
         # if so, load them
         model.load_state_dict(torch.load(model_path))
     else:   
-        pass
-    model.train()
+        # pass
+        model.train()
 
     weight_decay=0.0
     # learning_rate=5e-5
@@ -254,12 +254,12 @@ def main():
                 # print(step)
                 #  prepare data
                 batch = samples[step * batch_size: (step + 1) * batch_size]
-                batch_labels = []
+                # batch_labels = []
                 batch_inputs = []
                 for ids in batch:
-                    int_ids_for_labels = [int(x) for x in ids]
+                    # int_ids_for_labels = [int(x) for x in ids]
                     int_ids_for_inputs = [int(x) for x in ids]
-                    batch_labels.append(int_ids_for_labels)
+                    # batch_labels.append(int_ids_for_labels)
                     batch_inputs.append(int_ids_for_inputs)
                 if device=='cuda':
                     batch_inputs = torch.tensor(batch_inputs).long().to("cuda")
@@ -272,6 +272,7 @@ def main():
 
                 # print(len(batch_inputs))
                 # print(batch_inputs)
+                print(batch_inputs)
                 loss = model(batch_inputs, return_loss = True)
                 # pred = model(batch_inputs)
                 # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
