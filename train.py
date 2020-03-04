@@ -153,12 +153,12 @@ def main():
 
     model = ReformerLM(
         num_tokens= 13137,
-        dim = 1024,
+        dim = 96,
         depth = 12,
         max_seq_len = 4096,
         lsh_dropout = 0.1,
         causal = True,
-        full_attn_thres = 1024
+        full_attn_thres = 96
     )
 
 
@@ -261,18 +261,18 @@ def main():
                     batch_inputs.append(int_ids_for_inputs)
                 if device=='cuda':
                     batch_inputs = torch.tensor(batch_inputs).long().to("cuda")
-                    batch_labels = torch.tensor(batch_labels).long().to("cuda")
+                    # batch_labels = torch.tensor(batch_labels).long().to("cuda")
                 else:
                     batch_inputs = torch.tensor(batch_inputs).long()
-                    batch_labels = torch.tensor(batch_labels).long()
+                    # batch_labels = torch.tensor(batch_labels).long()
                 # batch_inputs = torch.tensor(batch_inputs).long().to(device)
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
                 # print(batch_inputs)
-                # loss = model(batch_inputs, return_loss = True)
-                pred = model(batch_inputs)
-                loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_labels.view(-1))
+                loss = model(batch_inputs, return_loss = True)
+                # pred = model(batch_inputs)
+                # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
                 # print("计算loss",mlm_loss.item(),'返回loss',loss.item())
                 # print('返回loss',loss.item())
   
