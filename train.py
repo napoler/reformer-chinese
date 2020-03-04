@@ -164,7 +164,7 @@ def main():
 
     # 0 is used for padding and no loss to be calculated on it
     if device=='cuda':
-        model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).cuda()
+        model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).to('cuda')
     else:
         model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
 
