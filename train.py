@@ -153,12 +153,12 @@ def main():
 
     model = ReformerLM(
         num_tokens= 13137,
-        dim = 96,
+        dim = 1024,
         depth = 12,
         max_seq_len = 4096,
         lsh_dropout = 0.1,
         causal = True,
-        full_attn_thres = 96
+        full_attn_thres = 1024
     )
 
 
