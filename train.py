@@ -295,7 +295,7 @@ def main():
                         end = datetime.now()
                         print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
                         #  forward pass
-                gradient_accumulation_run=gradient_accumulation_run+1
+                    gradient_accumulation_run=gradient_accumulation_run+1
 
                 # scheduler.step()
                 # model.zero_grad()
