@@ -235,8 +235,8 @@ def main():
         # piece_num = 0
         gradient_accumulation_run=0
         model.zero_grad()   # reset gradient
-        for piece_num, i in tqdm(enumerate( x)):
-
+        # for piece_num, i in tqdm(enumerate( x)):
+        for piece_num, i in enumerate( x):
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
             tokens = line.split()
