@@ -273,8 +273,8 @@ def main():
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
-                # print(batch_inputs)
-                # print(len(batch_inputs))
+                print(batch_inputs)
+                print(len(batch_inputs))
                 try:
                     # 
                     loss = model(batch_inputs, return_loss = True)
