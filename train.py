@@ -273,8 +273,8 @@ def main():
 
                 # print(len(batch_inputs))
                 # print(batch_inputs)
-                print(batch_inputs)
-                print(len(batch_inputs))
+                # print(batch_inputs)
+                # print(len(batch_inputs))
                 try:
                     loss = model(batch_inputs, return_loss = True)
                     # pred = model(batch_inputs)
@@ -284,7 +284,6 @@ def main():
     
                     loss = loss/gradient_accumulation   
                     loss.backward()
-
                     if((gradient_accumulation_run+1)%gradient_accumulation)==0:
                         # optimizer the net
                         optimizer.step()
