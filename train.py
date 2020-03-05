@@ -289,7 +289,7 @@ def main():
                     pass
                 loss = loss/gradient_accumulation   
                 loss.backward()
-                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
+                if((step+1)%gradient_accumulation)==0:
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
