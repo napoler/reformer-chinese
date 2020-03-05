@@ -273,7 +273,7 @@ def main():
                 # print(len(batch_inputs))
                 # print(batch_inputs)
                 print(batch_inputs)
-                print(len(batch_inputs[0]))
+                print(len(batch_inputs))
                 loss = model(batch_inputs, return_loss = True)
                 # pred = model(batch_inputs)
                 # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
