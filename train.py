@@ -275,18 +275,8 @@ def main():
                 # print(len(batch_inputs))
                 print(batch_inputs)
                 print(len(batch_inputs))
-                try:
-                    # 
-                    loss = model(batch_inputs, return_loss = True)
-                    print("成功")
-                    # pred = model(batch_inputs)
-                    # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
-                    # print("计算loss",mlm_loss.item(),'返回loss',loss.item())
-                    # print('返回loss',loss.item())
-                except:
-                    print("错误！")
-                    continue
-                    pass
+
+                loss = model(batch_inputs, return_loss = True)
                 loss = loss/gradient_accumulation   
                 loss.backward()
                 if((step+1)%gradient_accumulation)==0:
