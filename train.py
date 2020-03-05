@@ -272,8 +272,7 @@ def main():
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
-                # print(batch_inputs)
-                # print(batch_inputs)
+                print(batch_inputs)
                 # print(len(batch_inputs))
                 try:
                     print("成功")
