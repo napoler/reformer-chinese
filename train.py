@@ -273,8 +273,8 @@ def main():
                 # print(batch_labels)
 
                 # print(len(batch_inputs))
-                print(batch_inputs)
-                print(len(batch_inputs))
+                # print(batch_inputs)
+                # print(len(batch_inputs))
 
                 loss = model(batch_inputs, return_loss = True)
                 loss = loss/gradient_accumulation   
@@ -283,9 +283,9 @@ def main():
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
-                    optimizer.zero_grad()        # update parameters of net
+                    # optimizer.zero_grad()        # update parameters of net
                     # scheduler.zero_grad()        # update parameters of net
-                    # model.zero_grad()   # reset gradient
+                    model.zero_grad()   # reset gradient
                     end = datetime.now()
                     print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
                     #  forward pass
@@ -295,12 +295,12 @@ def main():
                 # model.zero_grad()
             # end = datetime.now()
             # print("one piece:",end-now," s")
-            model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
-            torch.save(model.cpu().state_dict(), model_cpu_path)
+
             torch.save(model.state_dict(), model_path)
             torch.save(optimizer.state_dict(), optimizer_path)
             torch.save(scheduler.state_dict(), scheduler_path)
-
+    model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
+    torch.save(model.cpu().state_dict(), model_cpu_path)
 if __name__ == '__main__':
     main()
 
