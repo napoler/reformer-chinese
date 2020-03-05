@@ -250,7 +250,7 @@ def main():
                 samples.append(tokens[len(tokens)-n_ctx:])
             random.shuffle(samples)
             # print(len(samples))
-            print("samples",samples)
+            # print("samples",samples)
             print(len(samples) // batch_size)
             for step in range(len(samples) // batch_size):  # drop last
                 # print(step)
