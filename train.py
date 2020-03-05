@@ -281,23 +281,24 @@ def main():
                     # loss = loss_fn(pred.view(-1, full_tokenizer.vocab_size), batch_inputs.view(-1))
                     # print("计算loss",mlm_loss.item(),'返回loss',loss.item())
                     print('返回loss',loss.item())
-    
-                    loss = loss/gradient_accumulation   
-                    loss.backward()
-                    if((gradient_accumulation_run+1)%gradient_accumulation)==0:
-                        # optimizer the net
-                        optimizer.step()
-                        scheduler.step()        # update parameters of net
-                        # optimizer.zero_grad()        # update parameters of net
-                        # scheduler.zero_grad()        # update parameters of net
-                        model.zero_grad()   # reset gradient
-                        end = datetime.now()
-                        print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
-                        #  forward pass
-                    gradient_accumulation_run=gradient_accumulation_run+1
                 except:
                     print("错误！")
+                    continue
                     pass
+                loss = loss/gradient_accumulation   
+                loss.backward()
+                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
+                    # optimizer the net
+                    optimizer.step()
+                    scheduler.step()        # update parameters of net
+                    # optimizer.zero_grad()        # update parameters of net
+                    # scheduler.zero_grad()        # update parameters of net
+                    model.zero_grad()   # reset gradient
+                    end = datetime.now()
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",gradient_accumulation_run+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
+                    #  forward pass
+                gradient_accumulation_run=gradient_accumulation_run+1
+
                 # scheduler.step()
                 # model.zero_grad()
             # end = datetime.now()
