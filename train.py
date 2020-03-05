@@ -296,6 +296,7 @@ def main():
                         #  forward pass
                     gradient_accumulation_run=gradient_accumulation_run+1
                 except:
+                    print("错误！")
                     pass
                 # scheduler.step()
                 # model.zero_grad()
