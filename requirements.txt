@@ -1,7 +1,7 @@
 transformers==2.5.1
 numpy==1.18.1
 torch==1.4.0
-reformer_pytorch==0.12.28
+reformer-pytorch==0.15.3
 tqdm==4.43.0
 keras==2.3.1
 thulac==0.2.1

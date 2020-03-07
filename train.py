@@ -251,7 +251,7 @@ def main():
             random.shuffle(samples)
             # print(len(samples))
             # print("samples",samples)
-            print(len(samples) // batch_size)
+            # print(len(samples) // batch_size)
             for step in range(len(samples) // batch_size):  # drop last
                 # print(step)
                 #  prepare data
@@ -279,7 +279,7 @@ def main():
                 loss = model(batch_inputs, return_loss = True)
                 loss = loss/gradient_accumulation   
                 loss.backward()
-                if((step+1)%gradient_accumulation)==0:
+                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
