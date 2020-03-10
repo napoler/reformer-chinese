@@ -279,7 +279,7 @@ def main():
                 loss = model(batch_inputs, return_loss = True)
                 loss = loss/gradient_accumulation   
                 loss.backward()
-                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
+                if((step+1)%gradient_accumulation)==0:
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
@@ -288,7 +288,7 @@ def main():
                     model.zero_grad()   # reset gradient
                     end = datetime.now()
                     print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
-                    #  forward pass
+                    
                 gradient_accumulation_run=gradient_accumulation_run+1
 
                 # scheduler.step()

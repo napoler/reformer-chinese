@@ -67,6 +67,19 @@ def get(start_text,length=30):
 #   print(sample)
   # print(sample.shape) # (1, <=100) token ids
   text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
+
+            #   if multi_gpu:
+            #     loss = loss.mean()
+            # total_loss += loss
+            # total_steps += 1
+
+            # if (overall_step + 1) % log_step == 0:
+            #     print('now time: {}:{}. Step {} of piece {}, ppl {}'.format(
+            #         datetime.now().hour,
+            #         datetime.now().minute,
+            #         (step + 1),
+            #         piece_num,
+            #         torch.exp(loss)))
   return text
 
 # get(start_text)
@@ -75,6 +88,20 @@ def get(start_text,length=30):
 # parser = argparse.ArgumentParser()
 # parser.add_argument('--text', default='狗', type=str, required=False, help='设置使用哪些显卡')
 
+# import math
+def get_ppl(start_text):
+  """
+  计算ppl值 语句流畅度
+  """
+  initial =auto_encode(start_text)
+  loss = model(initial, return_loss = True)
+  # print(loss)
+  loss = loss.mean()
+  ppl =torch.exp(loss).item()
+  # print(ppl)
+  return ppl
+  # ppl = math.exp(loss.mean().item())
+  # print(ppl)
 
 # args = parser.parse_args()
 
@@ -82,3 +109,4 @@ while True:
     start_text=input("输入开始词语:")
     pre_text=get(start_text)
     print("".join(pre_text))
+    print(get_ppl(start_text+"".join(pre_text)))
