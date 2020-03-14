@@ -73,7 +73,7 @@ def main():
     parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=4096, type=int, required=False, help='训练时取训练数据的窗口步长')
+    parser.add_argument('--stride', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
@@ -290,7 +290,7 @@ def main():
                 loss = loss/gradient_accumulation   
                 loss.backward()
                 # print(loss.sum())
-                if((step+1)%gradient_accumulation)==0:
+                if((gradient_accumulation_run+1)%gradient_accumulation)==0:
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
