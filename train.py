@@ -236,6 +236,7 @@ def main():
     print('starting training')
     overall_step = 0
     running_loss = 0
+    gradient_accumulation_run=0
     for epoch in range(epochs):
         print('epoch {}'.format(epoch + 1))
         now = datetime.now()
@@ -243,7 +244,7 @@ def main():
         x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
         random.shuffle(x)
         # piece_num = 0
-        gradient_accumulation_run=0
+
         # model.zero_grad()   # reset gradient
         # for piece_num, i in tqdm(enumerate( x)):
         for piece_num, i in enumerate( x):
