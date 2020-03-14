@@ -70,10 +70,10 @@ def main():
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=2, type=int, required=False, help='训练batch size')
-    parser.add_argument('--lr', default=5e-5, type=float, required=False, help='学习率')
+    parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
+    parser.add_argument('--stride', default=4096, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
@@ -108,7 +108,7 @@ def main():
     # full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
     full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
     # full_tokenizer.max_len = n_ctx
-    n_ctx=1000
+
     # if args.device==''
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     #强制使用cpu
@@ -125,6 +125,7 @@ def main():
     warmup_steps = args.warmup_steps
     log_step = args.log_step
     stride = args.stride
+    n_ctx=args.stride
     gradient_accumulation = args.gradient_accumulation
     
     # fp16 = args.fp16  # 不支持半精度的显卡请勿打开
