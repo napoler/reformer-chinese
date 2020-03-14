@@ -149,6 +149,15 @@ def main():
                     full_tokenizer=full_tokenizer, min_length=min_length)
         print('files built')
 
+    # model = ReformerLM(
+    #     num_tokens= 13137,
+    #     dim = 128,
+    #     depth = 12,
+    #     max_seq_len = 4096,
+    #     lsh_dropout = 0.1,
+    #     causal = True,
+    #     full_attn_thres = 128
+    # )
 
 
     model = ReformerLM(
@@ -219,7 +228,7 @@ def main():
         optimizer.load_state_dict(torch.load(optimizer_path))
         scheduler.load_state_dict(torch.load(scheduler_path))
 
-
+    print("optimizer",optimizer)
     loss_fn=nn.CrossEntropyLoss()
 
     
@@ -279,13 +288,14 @@ def main():
                 loss = model(batch_inputs, return_loss = True)
                 loss = loss/gradient_accumulation   
                 loss.backward()
+                # print(loss.sum())
                 if((step+1)%gradient_accumulation)==0:
                     # optimizer the net
                     optimizer.step()
                     scheduler.step()        # update parameters of net
-                    # optimizer.zero_grad()        # update parameters of net
+                    optimizer.zero_grad()        # update parameters of net
                     # scheduler.zero_grad()        # update parameters of net
-                    model.zero_grad()   # reset gradient
+                    # model.zero_grad()   # reset gradient
                     end = datetime.now()
                     print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
                     
