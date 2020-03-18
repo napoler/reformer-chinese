@@ -4,4 +4,6 @@
 # python3 train.py --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 5e-05
 python3 train.py --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 0.01 --num_pieces 100
 
-python3 train_sent.py --raw --epochs 2 --device cpu --batch_size 1 --gradient_accumulation 1 --lr 0.01 --num_pieces 1
+# python3 train_sent.py --raw --epochs 2 --device cpu --batch_size 1 --gradient_accumulation 1 --lr 0.01 --num_pieces 1
+python3 train_sent.py --output_dir model --batch_size 4 --epochs 4 --device cuda
+
