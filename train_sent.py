@@ -189,7 +189,7 @@ def train(device='cpu',output_dir='model',epochs=5,save_step=5,batch_size=4):
         optimizer_path=os.path.join(output_dir, 'optimizer.pt')
         torch.save(model.state_dict(), model_cpu_path)
         torch.save(optimizer.state_dict(), optimizer_path)
-train()
+# train()
 # print("1:训练 2:生成")
 # x=input("选择：")
 # if x =='1':
@@ -229,6 +229,7 @@ def main():
     # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
 
     args = parser.parse_args()
+    print('args',args)
     train(device=args.device,output_dir=args.output_dir,epochs=args.epochs,save_step=5,batch_size=args.batch_size)
 
 if __name__ == '__main__':
