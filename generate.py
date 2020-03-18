@@ -56,7 +56,7 @@ def auto_encode(sentence_0):
 
 
 
-def get(start_text,length=30):
+def get(start_text,length=50):
   """
   获取预测文本
   """
