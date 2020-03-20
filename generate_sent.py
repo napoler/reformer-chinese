@@ -104,7 +104,8 @@ def gen(text):
     #   print(sample)
     # print(sample.shape) # (1, <=100) token ids
     text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
-    print(text)
+    # print(text)
+    return text
 
 
 
@@ -195,42 +196,6 @@ def train(device='cpu',output_dir='model',epochs=5,save_step=5,batch_size=4):
 # if x =='1':
 #     train()
 # else:
-#     x=input("关键词")
-#     gen(x)
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--device', default='cuda', type=str, required=False, help='设置使用哪些显卡')
-    # parser.add_argument('--model_config', default='config/model_config_small.json', type=str, required=False,
-    #                     help='选择模型参数')
-    # parser.add_argument('--tokenizer_path', default='cache/vocab_small_terry_ai.txt', type=str, required=False, help='选择词库')
-    # parser.add_argument('--raw_data_path', default='data/train.json', type=str, required=False, help='原始训练语料')
-    # parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
-                        # help='tokenized语料存放位置')
-    # parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
-    parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=2, type=int, required=False, help='训练batch size')
-    parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
-    # parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
-    # parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
-    # parser.add_argument('--stride', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长')
-    parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
-    # parser.add_argument('--fp16', action='store_true', help='混合精度')
-    # parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
-    # parser.add_argument('--max_grad_norm', default=1.0, type=float, required=False)
-    # parser.add_argument('--num_pieces', default=10, type=int, required=False, help='将训练语料分成多少份')
-    # parser.add_argument('--min_length', default=128, type=int, required=False, help='最短收录文章长度')
-    parser.add_argument('--output_dir', default='model/', type=str, required=False, help='模型输出路径')
-    # parser.add_argument('--pretrained_model', default='', type=str, required=False, help='模型训练起点路径')
-    # parser.add_argument('--writer_dir', default='tensorboard_summary/', type=str, required=False, help='Tensorboard路径')
-    # parser.add_argument('--segment', action='store_true', help='中文以词为单位')
-    # parser.add_argument('--bpe_token', action='store_true', help='subword')
-    # parser.add_argument('--encoder_json', default="tokenizations/encoder.json", type=str, help="encoder.json")
-    # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
-
-    args = parser.parse_args()
-    print('args',args)
-    train(device=args.device,output_dir=args.output_dir,epochs=args.epochs,save_step=5,batch_size=args.batch_size)
-
-if __name__ == '__main__':
-    main()
+x=input("关键词")
+words=gen(x)
+print("".join(words))
