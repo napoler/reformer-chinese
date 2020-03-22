@@ -4,12 +4,14 @@ from reformer_pytorch.generative_tools import TrainingWrapper
 import torch
 from transformers import *
 import os
+from reformer_chinese import *
 pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 device='cpu'
 output_dir='model'
 
 
-tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
+# tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
+tokenizer=tokenizer_plus(pretrained_weights)
 model = ReformerLM(
     num_tokens= 13137,
     dim = 1024,

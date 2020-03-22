@@ -25,7 +25,8 @@ import pickle
 import tkitFile 
 
 
-tokenizer = BertTokenizer.from_pretrained('cache/vocab_small_terry_ai.txt')
+pretrained_weights = 'cache/vocab_small_terry_ai.txt'
+tokenizer=tokenizer_plus(pretrained_weights)
 tokenizer.max_len = 128
 def get_data(path,tokenizer):
     

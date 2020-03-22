@@ -19,7 +19,7 @@ from torch import randint
 import torch.nn as nn
 from reformer_pytorch import ReformerLM
 from reformer_pytorch.generative_tools import TrainingWrapper
-
+from reformer_chinese import *
 
 def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, min_length):
     if ppd.is_default_file_type():  # 是否采用默认json类型，默认编码为utf-8
@@ -106,7 +106,8 @@ def main():
     #     full_tokenizer = get_encoder(args.encoder_json, args.vocab_bpe)
     # else:
     # full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
-    full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
+    # full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
+    full_tokenizer=tokenizer_plus(args.tokenizer_path)
     # full_tokenizer.max_len = n_ctx
 
     # if args.device==''
