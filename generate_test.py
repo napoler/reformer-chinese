@@ -8,20 +8,18 @@ from reformer_chinese import *
 pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 device='cpu'
 output_dir='model'
-config_file=os.path.join(output_dir,'config.json')
-Config=tkitJson.Config(config_file)
-conf=Config.read()
+
 
 # tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
 tokenizer=tokenizer_plus(pretrained_weights)
 model = ReformerLM(
-    num_tokens= conf['num_tokens'],
-    dim = conf['dim'],
-    depth = conf['depth'],
-    max_seq_len = conf['max_seq_len'],
-    lsh_dropout = conf['lsh_dropout'],
-    causal = conf['causal'],
-    full_attn_thres = conf['full_attn_thres']
+    num_tokens= 13137,
+    dim = 1024,
+    depth = 12,
+    max_seq_len = 4096,
+    lsh_dropout = 0.1,
+    causal = True,
+    full_attn_thres = 1024
 )
 
 
@@ -109,8 +107,8 @@ def get_ppl(start_text):
 
 # args = parser.parse_args()
 
-while True:
-    start_text=input("输入开始词语:")
-    pre_text=get(start_text)
-    print("".join(pre_text))
-    print(get_ppl(start_text+"".join(pre_text)))
+
+start_text="如何演好自己的角色，请读《演员自我修养》《喜剧之王》周星驰崛起于穷困潦倒之中的独门秘笈"
+pre_text=get(start_text)
+print("".join(pre_text))
+print(get_ppl(start_text+"".join(pre_text)))

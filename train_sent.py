@@ -23,8 +23,11 @@ from transformers import BertTokenizer, AdamW
 # from processors import *
 import pickle
 import tkitFile 
+from reformer_chinese import *
+"""
+训练根据关键词造句
 
-
+"""
 pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 tokenizer=tokenizer_plus(pretrained_weights)
 tokenizer.max_len = 128
