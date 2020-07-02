@@ -12,9 +12,9 @@ reformer-pytorch中文版本
 # python3 train.py --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 5e-05
 python3 train.py --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 0.01 --num_pieces 100
 
-python3 train.py --raw --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 0.01 --num_pieces 10 --dim 128 --depth 6 --full_attn_thres 128
+python3 train.py --raw --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 0.001 --num_pieces 10 --dim 128 --depth 12 --full_attn_thres 128
 
-
+python3 train.py  --epochs 2 --device cpu --batch_size 4 --gradient_accumulation 2 --lr 0.001 --num_pieces 10 --dim 128 --depth 12 --full_attn_thres 128
 
 
 

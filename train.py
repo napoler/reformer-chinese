@@ -21,7 +21,7 @@ from reformer_pytorch import ReformerLM
 from reformer_pytorch.generative_tools import TrainingWrapper
 from reformer_chinese import *
 import tkitJson
-
+import shutil
 def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, min_length):
     if ppd.is_default_file_type():  # 是否采用默认json类型，默认编码为utf-8
         if ppd.DEFAULT_FILE_TYPE in data_path:
@@ -128,7 +128,9 @@ def main():
     'stride': args.stride, 
     }
     Config.save(new_conf)
-
+    #复制词典
+    shutil.copy(args.tokenizer_path,os.path.join(args.output_dir,'vocab.txt'))
+    
     print('args:\n' + args.__repr__())
 
     # if args.segment:
