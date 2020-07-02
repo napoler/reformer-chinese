@@ -109,13 +109,7 @@ def main():
     # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
 
     args = parser.parse_args()
-    if args.pretrained_model:
-        config_file=os.path.join(args.pretrained_model,'config.json')
-        Config=tkitJson.Config(config_file)
-        old_conf=Config.read()
-    else:
-        # args.output_dir
-        pass
+
     config_file=os.path.join(args.output_dir,'config.json')
     Config=tkitJson.Config(config_file)
     new_conf={'num_tokens':13137,
