@@ -156,6 +156,7 @@ def main():
     raw_data_path = args.raw_data_path
     tokenized_data_path = args.tokenized_data_path
     raw = args.raw  # 选择是否从零开始构建数据集
+    pretrained_model = args.pretrained_model
     epochs = args.epochs
     batch_size = args.batch_size
     lr = args.lr
@@ -174,9 +175,9 @@ def main():
     # tb_writer = SummaryWriter(log_dir=args.writer_dir)
 
 
-    model_path=os.path.join(output_dir, 'model.pt')
-    optimizer_path= os.path.join(output_dir, 'optimizer.pt')
-    scheduler_path=os.path.join(output_dir, 'scheduler.pt')
+    model_path=os.path.join(pretrained_model, 'model.pt')
+    optimizer_path= os.path.join(pretrained_model, 'optimizer.pt')
+    scheduler_path=os.path.join(pretrained_model, 'scheduler.pt')
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)

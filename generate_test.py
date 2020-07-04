@@ -5,21 +5,27 @@ import torch
 from transformers import *
 import os
 from reformer_chinese import *
-pretrained_weights = 'cache/vocab_small_terry_ai.txt'
+import tkitJson
+
+# pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 device='cpu'
 output_dir='model'
 
+pretrained_weights=os.path.join(output_dir,'vocab.txt')
+config_file=os.path.join(output_dir,'config.json')
+Config=tkitJson.Config(config_file)
+conf=Config.read()
 
 # tokenizer = BertTokenizer.from_pretrained(pretrained_weights)
 tokenizer=tokenizer_plus(pretrained_weights)
 model = ReformerLM(
-    num_tokens= 13137,
-    dim = 1024,
-    depth = 12,
-    max_seq_len = 4096,
-    lsh_dropout = 0.1,
-    causal = True,
-    full_attn_thres = 1024
+    num_tokens= conf['num_tokens'],
+    dim = conf['dim'],
+    depth = conf['depth'],
+    max_seq_len = conf['max_seq_len'],
+    lsh_dropout = conf['lsh_dropout'],
+    causal = conf['causal'],
+    full_attn_thres = conf['full_attn_thres']
 )
 
 
@@ -64,9 +70,9 @@ def get(start_text,length=50):
   """
   # start_text=x_train_text[0][:5]
   initial =auto_encode(start_text)
-#   print(initial)
+  # print(initial)
   sample = model.generate(initial, length, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
-#   print(sample)
+  # print(sample)
   # print(sample.shape) # (1, <=100) token ids
   text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
 
@@ -106,9 +112,20 @@ def get_ppl(start_text):
   # print(ppl)
 
 # args = parser.parse_args()
+file="data/train.txt"
+fp=open(file,'r')
+lines = fp.readlines()
+for line in lines:
+  print("\n"*3)
+  print("###"*20)
+  print("原始语句：",line.split("[KGS]")[0])
+  try:
+    print("正确知识：",line.split("[KGS]")[1])
+  except:
+    pass
+  # print(line.split("[KGS]"))
+  start_text=line.split("[KGS]")[0]+" [KGS] "
+  pre_text=get(start_text)
 
-
-start_text="如何演好自己的角色，请读《演员自我修养》《喜剧之王》周星驰崛起于穷困潦倒之中的独门秘笈"
-pre_text=get(start_text)
-print("".join(pre_text))
-print(get_ppl(start_text+"".join(pre_text)))
+  print("预测结果","".join(pre_text))
+  # print(get_ppl(start_text+"".join(pre_text)))
