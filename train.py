@@ -178,7 +178,9 @@ def main():
     model_path=os.path.join(pretrained_model, 'model.pt')
     optimizer_path= os.path.join(pretrained_model, 'optimizer.pt')
     scheduler_path=os.path.join(pretrained_model, 'scheduler.pt')
-
+    output_model_path=os.path.join(output_dir, 'model.pt')
+    output_optimizer_path= os.path.join(output_dir, 'optimizer.pt')
+    output_scheduler_path=os.path.join(output_dir, 'scheduler.pt')
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
@@ -346,9 +348,9 @@ def main():
             # end = datetime.now()
             # print("one piece:",end-now," s")
 
-            torch.save(model.state_dict(), model_path)
-            torch.save(optimizer.state_dict(), optimizer_path)
-            torch.save(scheduler.state_dict(), scheduler_path)
+            torch.save(model.state_dict(),  output_model_path)
+            torch.save(optimizer.state_dict(), output_optimizer_path)
+            torch.save(scheduler.state_dict(),  output_scheduler_path)
     model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
     torch.save(model.cpu().state_dict(), model_cpu_path)
 if __name__ == '__main__':
