@@ -174,10 +174,11 @@ def main():
     output_dir = args.output_dir
     # tb_writer = SummaryWriter(log_dir=args.writer_dir)
 
-
+    # 加载之前的模型路径
     model_path=os.path.join(pretrained_model, 'model.pt')
     optimizer_path= os.path.join(pretrained_model, 'optimizer.pt')
     scheduler_path=os.path.join(pretrained_model, 'scheduler.pt')
+    # 设置输出
     output_model_path=os.path.join(output_dir, 'model.pt')
     output_optimizer_path= os.path.join(output_dir, 'optimizer.pt')
     output_scheduler_path=os.path.join(output_dir, 'scheduler.pt')
