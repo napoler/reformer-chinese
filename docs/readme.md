@@ -4,10 +4,12 @@
 
 GTP2的参数越来越大，显存实在是开销不起，还好Google又开源了reformer，让我们用小的显存也可以做生成了。
 
+## 训练
+
 ```
 python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 60 --pretrained_model  model/
 ```
-
+### 参数
 - dim ：窗口大小
 - stride ：滑窗大小
 - pretrained_model ：上次训练的模型
@@ -20,6 +22,8 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 - depth：
 - full_attn_thres：
 - output_dir：输出的目录
+
+模型输出到model目录下
 
 ## 数据
 
