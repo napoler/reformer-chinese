@@ -20,3 +20,8 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 - depth：
 - full_attn_thres：
 - output_dir：输出的目录
+
+## 数据
+
+数据放在/data目录下命名为train.txt的纯文本即可
+一行一段
