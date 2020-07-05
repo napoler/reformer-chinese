@@ -19,3 +19,4 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 - num_pieces：分片数目
 - depth：
 - full_attn_thres：
+- output_dir：输出的目录
