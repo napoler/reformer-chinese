@@ -76,8 +76,8 @@ def auto_encode(sentence_0,tokenizer):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='cuda', type=str, required=False, help='设置使用哪些显卡')
-    parser.add_argument('--model_config', default='config/model_config_small.json', type=str, required=False,
-                        help='选择模型参数')
+    # parser.add_argument('--model_config', default='config/model_config_small.json', type=str, required=False,
+    #                     help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small_terry_ai.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train.json', type=str, required=False, help='原始训练语料')
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
@@ -88,7 +88,8 @@ def main():
     parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长')
+    parser.add_argument('--stride', default=512, type=int, required=False, help=' 向前跨越的长度')
+    parser.add_argument('--dim', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长单个样本长度')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
@@ -101,7 +102,7 @@ def main():
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     parser.add_argument('--bpe_token', action='store_true', help='subword')
 
-    parser.add_argument('--dim', default=1024, type=int, required=False, help='dim')
+    # parser.add_argument('--dim', default=1024, type=int, required=False, help='dim')
     parser.add_argument('--depth', default=12, type=int, required=False, help='depth')
     parser.add_argument('--full_attn_thres', default=1024, type=int, required=False, help='full_attn_thres')
     parser.add_argument('--max_seq_len', default=4096, type=int, required=False, help='max_seq_len')
@@ -109,18 +110,19 @@ def main():
     # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
 
     args = parser.parse_args()
-
+    full_tokenizer=tokenizer_plus(args.tokenizer_path)
     config_file=os.path.join(args.output_dir,'config.json')
     Config=tkitJson.Config(config_file)
-    new_conf={'num_tokens':13137,
-    'dim': args.dim,
+    new_conf={'num_tokens':full_tokenizer.vocab_size,
+    'dim': args.stride, #和窗口长度一样 
     'depth' : args.depth,
     'max_seq_len' :  args.max_seq_len,
     'lsh_dropout' : 0.1,
     'causal' : True,
     'full_attn_thres' : args.full_attn_thres,
-    'stride': args.stride, 
+    'stride': args.stride,  #滑块长度
     }
+    print("new_conf:",new_conf)
     Config.save(new_conf)
     #复制词典
     shutil.copy(args.tokenizer_path,os.path.join(args.output_dir,'vocab.txt'))
@@ -137,14 +139,14 @@ def main():
     # model_config = transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
     # print('config:\n' + model_config.to_json_string())
 
-    # n_ctx = model_config.n_ctx
+    # dim = model_config.dim
     # if args.bpe_token:
     #     full_tokenizer = get_encoder(args.encoder_json, args.vocab_bpe)
     # else:
     # full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
     # full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
-    full_tokenizer=tokenizer_plus(args.tokenizer_path)
-    # full_tokenizer.max_len = n_ctx
+
+    # full_tokenizer.max_len = dim
 
     # if args.device==''
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -163,7 +165,9 @@ def main():
     warmup_steps = args.warmup_steps
     log_step = args.log_step
     stride = args.stride
-    n_ctx=args.stride
+    dim=args.dim
+    if stride>= dim:
+        stride=dim/2
     gradient_accumulation = args.gradient_accumulation
     
     # fp16 = args.fp16  # 不支持半精度的显卡请勿打开
@@ -192,26 +196,14 @@ def main():
         print('files built')
 
     model = ReformerLM(
-        num_tokens= 13137,
-        dim = args.dim,
+        num_tokens= full_tokenizer.vocab_size,
+        dim = args.dim, #窗口长度
         depth = args.depth,
         max_seq_len =  args.max_seq_len,
         lsh_dropout = 0.1,
         causal = True,
         full_attn_thres = args.full_attn_thres
     )
-
-
-    # model = ReformerLM(
-    #     num_tokens= 13137,
-    #     dim = 1024,
-    #     depth = 12,
-    #     max_seq_len = 4096,
-    #     lsh_dropout = 0.1,
-    #     causal = True,
-    #     full_attn_thres = 1024
-    # )
-
 
     # 0 is used for padding and no loss to be calculated on it
     if device=='cuda':
@@ -293,13 +285,22 @@ def main():
                 line = f.read().strip()
             tokens = line.split()
             tokens = [int(token) for token in tokens]
+            # print(len(tokens))
             start_point = 0
             samples = []
-            while start_point < len(tokens) - n_ctx:
-                samples.append(tokens[start_point: start_point + n_ctx])
+            #划窗
+            # dim=20
+            # print(dim)
+            
+            while start_point < len(tokens) - dim:
+                samples.append(tokens[start_point: start_point + dim])
+                # print(start_point, start_point + dim)
                 start_point += stride
             if start_point < len(tokens):
-                samples.append(tokens[len(tokens)-n_ctx:])
+                samples.append(tokens[len(tokens)-dim:])
+                # print(len(tokens)-dim)
+            # print(len(samples[0]))
+            # print(len(samples[1]))
             random.shuffle(samples)
             # print(len(samples))
             # print("samples",samples)
@@ -340,8 +341,8 @@ def main():
                     # scheduler.zero_grad()        # update parameters of net
                     # model.zero_grad()   # reset gradient
                     end = datetime.now()
-                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",step+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
-                    
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
+                overall_step+=1
                 gradient_accumulation_run=gradient_accumulation_run+1
 
                 # scheduler.step()
