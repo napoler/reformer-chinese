@@ -35,3 +35,8 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 ## 感谢
 
 1. reformer-pytorch - https://github.com/lucidrains/reformer-pytorch
+
+
+## ME
+我的博客：
+https://www.terrychan.org/
