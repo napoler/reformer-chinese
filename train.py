@@ -333,7 +333,7 @@ def main():
                     # scheduler.zero_grad()        # update parameters of net
                     # model.zero_grad()   # reset gradient
                     end = datetime.now()
-                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," loss:",loss.item(),'Time',end-now," s")
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now," s")
                 overall_step+=1
                 gradient_accumulation_run=gradient_accumulation_run+1
 
