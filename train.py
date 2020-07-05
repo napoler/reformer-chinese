@@ -95,7 +95,7 @@ def main():
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
     parser.add_argument('--max_grad_norm', default=1.0, type=float, required=False)
     parser.add_argument('--num_pieces', default=10, type=int, required=False, help='将训练语料分成多少份')
-    parser.add_argument('--min_length', default=128, type=int, required=False, help='最短收录文章长度')
+    parser.add_argument('--min_length', default=64, type=int, required=False, help='最短收录文章长度')
     parser.add_argument('--output_dir', default='model/', type=str, required=False, help='模型输出路径')
     parser.add_argument('--pretrained_model', default='', type=str, required=False, help='模型训练起点路径')
     # parser.add_argument('--writer_dir', default='tensorboard_summary/', type=str, required=False, help='Tensorboard路径')
@@ -114,7 +114,7 @@ def main():
     config_file=os.path.join(args.output_dir,'config.json')
     Config=tkitJson.Config(config_file)
     new_conf={'num_tokens':full_tokenizer.vocab_size,
-    'dim': args.stride, #和窗口长度一样 
+    'dim': args.dim, #和窗口长度一样 
     'depth' : args.depth,
     'max_seq_len' :  args.max_seq_len,
     'lsh_dropout' : 0.1,
@@ -197,7 +197,7 @@ def main():
 
     model = ReformerLM(
         num_tokens= full_tokenizer.vocab_size,
-        dim = args.dim, #窗口长度
+        dim = dim, #窗口长度
         depth = args.depth,
         max_seq_len =  args.max_seq_len,
         lsh_dropout = 0.1,
@@ -333,7 +333,7 @@ def main():
                     # scheduler.zero_grad()        # update parameters of net
                     # model.zero_grad()   # reset gradient
                     end = datetime.now()
-                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now," s")
+                    print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now," s")
                 overall_step+=1
                 gradient_accumulation_run=gradient_accumulation_run+1
 
