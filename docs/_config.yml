@@ -1,7 +1,7 @@
 theme: jekyll-theme-cayman
  
 # Setup
-title:       Reformer-chinese中文生成任务
+title:       Reformer-chinese中文生成模型
 tagline:      基于Reformer模型训练中文生成
 baseurl:      ""
 paginate:     1
