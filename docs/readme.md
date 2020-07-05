@@ -25,3 +25,9 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 
 数据放在/data目录下命名为train.txt的纯文本即可
 一行一段
+
+
+
+## 感谢
+
+1. reformer-pytorch - https://github.com/lucidrains/reformer-pytorch
