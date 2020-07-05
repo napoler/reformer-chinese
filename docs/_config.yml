@@ -1,1 +1,20 @@
 theme: jekyll-theme-cayman
+ 
+# Setup
+title:       Reformer-chinese中文生成任务
+tagline:      基于Reformer模型训练中文生成
+baseurl:      ""
+paginate:     1
+locale:       "zh"
+
+# About/contact
+author:
+  name:       Terry chan
+  url:        https://www.terrychan.org/
+
+# Gems
+gems:
+  - jekyll-paginate
+
+#Others
+markdown: kramdown
