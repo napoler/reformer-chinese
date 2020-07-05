@@ -6,6 +6,8 @@ from transformers import *
 import os
 from reformer_chinese import *
 import tkitJson
+from tkitMatch import Match
+
 
 # pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 device='cpu'
@@ -89,64 +91,26 @@ def get(start_text,length=50):
             #         piece_num,
             #         torch.exp(loss)))
   return text
-import re 
 
 
-# def filter_tags(htmlstr):
-#     #先过滤CDATA
-#     re_cdata=re.compile('//<![CDATA[[^>]*//]]>',re.I) #匹配CDATA
-#     re_script=re.compile('<s*script[^>]*>[^<]*<s*/s*scripts*>',re.I)#Script
-#     re_style=re.compile('<s*style[^>]*>[^<]*<s*/s*styles*>',re.I)#style
-#     re_kg=re.compile('[s*KG[^>]*][^<]*[s*/s*KG*]',re.I)#style
-#     re_br=re.compile('<brs*?/?>')#处理换行
-#     re_h=re.compile('</?w+[^>]*>')#HTML标签
-#     re_comment=re.compile('<!--[^>]*-->')#HTML注释
-#     s=re_cdata.sub('',htmlstr)#去掉CDATA
-#     s=re_script.sub('',s) #去掉SCRIPT
-#     s=re_kg.sub('',s)#re_kg
-#     s=re_style.sub('',s)#去掉style
-#     s=re_br.sub('n',s)#将br转换为换行
-#     s=re_h.sub('',s) #去掉HTML 标签
-#     s=re_comment.sub('',s)#去掉HTML注释
-#     #去掉多余的空行
-#     blank_line=re.compile('n+')
-#     s=blank_line.sub('n',s)
-#     s=replaceCharEntity(s)#替换实体
-#     return s
-
-
-def filter_tags(texts):
-  reObj1 = re.compile('((KG)\s+KG)') 
-  print(reObj1.findall(texts[0]) )
-
-  # pattern = re.compile('KG')
-  # for text in texts:
-  #   print(pattern.search(text))
-    # return s
 def get_kg(start_text,length=50):
   """
   获取预测知识
   """
   data=[]
-  # for w in get(start_text,length):
-  #   # print(w)
-  #   if w=='[/KGS]':
-  #     break
-  #   elif w=='[/KG]':
-  #     print("".join(words))
-  #     # words=[]
-  #     data.append(words)
-  #     pass
-  #   elif w=='[KG]':
-  #     words=[]
-  #     pass
-  #   elif w=='[S]':
-  #     pass
-  #   elif len(words)>=0:
-  #     words.append(w)
+
   text=get(start_text,length)
-  print("".join(text))
-  data = filter_tags(["".join(text)])
+  # print("".join(text))
+  pre_text="".join(text)
+  pre_text=pre_text.split("[/KGS]")[0]
+  # print(pre_text)
+  S=Match()
+  if pre_text:
+    kg=S.matching_pairs(pre_text,"KG")
+    for it in kg:
+      # print(it)
+      # print(it.split("[S]"))
+      data.append(it.split("[S]"))
   return data
 
 def get_ppl(start_text):
