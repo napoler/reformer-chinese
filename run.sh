@@ -5,7 +5,7 @@
 python3 train.py --epochs 1 --device cpu --batch_size 640 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --dim 64  --depth 6  --full_attn_thres 128 --stride 32
 
 #33
-python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --stride 32 --dim 64 --pretrained_model  model/
+python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128 --pretrained_model  model/
 
 # 训练根据关键词造句
 # python3 train_sent.py --raw --epochs 2 --device cpu --batch_size 1 --gradient_accumulation 1 --lr 0.01 --num_pieces 1

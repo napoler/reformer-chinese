@@ -88,7 +88,7 @@ def main():
     parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=512, type=int, required=False, help=' 向前跨越的长度')
+    parser.add_argument('--stride', default=500, type=int, required=False, help=' 向前跨越的长度')
     parser.add_argument('--dim', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长单个样本长度')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
@@ -167,7 +167,7 @@ def main():
     stride = args.stride
     dim=args.dim
     if stride>= dim:
-        stride=dim/2
+        stride=dim/2-2
     gradient_accumulation = args.gradient_accumulation
     
     # fp16 = args.fp16  # 不支持半精度的显卡请勿打开
@@ -288,23 +288,15 @@ def main():
             # print(len(tokens))
             start_point = 0
             samples = []
-            #划窗
-            # dim=20
-            # print(dim)
-            
+            #划窗切割数据
             while start_point < len(tokens) - dim:
                 samples.append(tokens[start_point: start_point + dim])
                 # print(start_point, start_point + dim)
                 start_point += stride
             if start_point < len(tokens):
                 samples.append(tokens[len(tokens)-dim:])
-                # print(len(tokens)-dim)
-            # print(len(samples[0]))
-            # print(len(samples[1]))
+            # 打乱数据，防止过度拟合
             random.shuffle(samples)
-            # print(len(samples))
-            # print("samples",samples)
-            # print(len(samples) // batch_size)
             for step in range(len(samples) // batch_size):  # drop last
                 # print(step)
                 #  prepare data
