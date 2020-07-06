@@ -127,23 +127,25 @@ def get_ppl(start_text):
   # ppl = math.exp(loss.mean().item())
   # print(ppl)
 
-# args = parser.parse_args()
-file="data/train.txt"
-fp=open(file,'r')
-lines = fp.readlines()
-for line in lines:
-  print("\n"*3)
-  print("###"*20)
-  print("原始语句：",line.split("[KGS]")[0])
-  try:
-    print("正确知识：",line.split("[KGS]")[1])
-  except:
-    pass
-  # print(line.split("[KGS]"))
-  start_text=line.split("[KGS]")[0]+" [KGS] "
-  print(get_kg(start_text))
-  # pre_text=get(start_text)
-  # p="".join(pre_text)
-  # # p.split("[/KGS]")[0]
-  # print("预测结果",p.split("[/KGS]")[0])
-  # # print(get_ppl(start_text+"".join(pre_text)))
+
+if __name__=='__main__':
+  # args = parser.parse_args()
+  file="data/train.txt"
+  fp=open(file,'r')
+  lines = fp.readlines()
+  for line in lines:
+    print("\n"*3)
+    print("###"*20)
+    print("原始语句：",line.split("[KGS]")[0])
+    try:
+      print("正确知识：",line.split("[KGS]")[1])
+    except:
+      pass
+    # print(line.split("[KGS]"))
+    start_text=line.split("[KGS]")[0]+" [KGS] "
+    print(get_kg(start_text))
+    # pre_text=get(start_text)
+    # p="".join(pre_text)
+    # # p.split("[/KGS]")[0]
+    # print("预测结果",p.split("[/KGS]")[0])
+    # # print(get_ppl(start_text+"".join(pre_text)))
