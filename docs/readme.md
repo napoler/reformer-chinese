@@ -1,13 +1,13 @@
 # reformer-chinese
 
-使用reformer训练续写
+使用reformer训练续写模型。
 
 GTP2的参数越来越大，显存实在是开销不起，还好Google又开源了reformer，让我们用小的显存也可以做生成了。
 
-reformer可以做的东西很多，
+reformer可以做的东西很多
 
 ## 训练
-
+示例
 ```
 python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 60 --pretrained_model  model/
 ```
@@ -52,8 +52,7 @@ python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulatio
 
 当然这是其中比较好的，大体还是不错的。
 
-和使用mark模式不同的是，使用生成模型做训练的结果是可以提取出原文不存在的一些知识。比如所属专辑这种，不是原文中存在的文字，显然使用mark模式是做不到的。
-不过生成模型也有时候会出现太过放飞自我的问题，比如出现不存在的名字或者实体等等。
+和使用[mark模式](https://www.terrychan.org/tkitMarker_bert/ "mark模式")不同的是，使用生成模型做训练的结果是可以提取出原文不存在的一些知识。比如所属专辑这种，不是原文中存在的文字，显然使用mark模式是做不到的。不过生成模型也有时候会出现太过放飞自我的问题，比如出现不存在的名字或者实体描述等等。
 
 
 ## 感谢
