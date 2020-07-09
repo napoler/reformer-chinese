@@ -74,20 +74,10 @@ def get(start_text,length=50):
   sample = model.generate(initial, length, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
   # print(sample)
   # print(sample.shape) # (1, <=100) token ids
-  text = tokenizer.convert_ids_to_tokens(sample.tolist()[0])
+  text = []
+  for it in tokenizer.convert_ids_to_tokens(sample.tolist()[0]):
+    text.append(it.replace("##",''))
 
-            #   if multi_gpu:
-            #     loss = loss.mean()
-            # total_loss += loss
-            # total_steps += 1
-
-            # if (overall_step + 1) % log_step == 0:
-            #     print('now time: {}:{}. Step {} of piece {}, ppl {}'.format(
-            #         datetime.now().hour,
-            #         datetime.now().minute,
-            #         (step + 1),
-            #         piece_num,
-            #         torch.exp(loss)))
   return text
 
 # get(start_text)
@@ -114,7 +104,8 @@ def get_ppl(start_text):
 # args = parser.parse_args()
 
 while True:
-    start_text=input("输入开始词语:")
-    pre_text=get(start_text)
-    print("".join(pre_text))
-    print(get_ppl(start_text+"".join(pre_text)))
+  print("\n\n"+"##"*10)
+  start_text=input("输入开始词语:")
+  pre_text=get(start_text)
+  print("".join(pre_text))
+  print(get_ppl(start_text+"".join(pre_text)))
