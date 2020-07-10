@@ -7,7 +7,12 @@ python3 train.py --epochs 1 --device cpu --batch_size 640 --gradient_accumulatio
 #33
 python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 60 --pretrained_model  model/
 
+
+
+
+python3 trainbyalbert.py --epochs 1 --device cpu --batch_size 6 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 512 --dim 312  --stride 60
+python3 trainbyalbert.py --epochs 1 --device cpu --batch_size 6 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 512 --dim 128  --stride 60
 # 训练根据关键词造句
 # python3 train_sent.py --raw --epochs 2 --device cpu --batch_size 1 --gradient_accumulation 1 --lr 0.01 --num_pieces 1
-python3 train_sent.py --output_dir model --batch_size 4 --epochs 4 --device cuda
+python3 train_sent.py --output_dir model --batch_size 4 --epochs 4 --device cuda 
 
