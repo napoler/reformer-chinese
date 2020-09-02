@@ -6,7 +6,15 @@ from transformers import *
 import os
 from reformer_chinese import *
 import tkitJson
+from tkitMatch import Match
+import pymongo
+#这里定义mongo数据
+client = pymongo.MongoClient("localhost", 27017)
+DB = client.gpt2Write
 
+
+
+# print(DB.name)
 # pretrained_weights = 'cache/vocab_small_terry_ai.txt'
 device='cpu'
 output_dir='model'
@@ -78,15 +86,30 @@ def get(start_text,length=50):
   for it in tokenizer.convert_ids_to_tokens(sample.tolist()[0]):
     text.append(it.replace("##",''))
 
+
   return text
 
-# get(start_text)
 
+def get_kg(start_text,length=50):
+  """
+  获取预测知识
+  """
+  data=[]
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('--text', default='狗', type=str, required=False, help='设置使用哪些显卡')
+  text=get(start_text,length)
+  # print("".join(text))
+  pre_text="".join(text)
+  pre_text=pre_text.split("[/KGS]")[0]
+  # print(pre_text)
+  S=Match()
+  if pre_text:
+    kg=S.matching_pairs(pre_text,"KG")
+    for it in kg:
+      # print(it)
+      # print(it.split("[S]"))
+      data.append(it.split("[S]"))
+  return data
 
-# import math
 def get_ppl(start_text):
   """
   计算ppl值 语句流畅度
@@ -101,13 +124,24 @@ def get_ppl(start_text):
   # ppl = math.exp(loss.mean().item())
   # print(ppl)
 
-# args = parser.parse_args()
-length=50
-length=int(input("输入生成长度："))
-while True:
-  print("\n\n"+"##"*10)
 
-  start_text=input("输入开始词语:")
-  pre_text=get(start_text,length)
-  print("".join(pre_text))
-  print(get_ppl(start_text+"".join(pre_text)))
+if __name__=='__main__':
+
+  for line in DB.train.find({}):
+    content=line['sentence']
+    print("\n"*3)
+    print("###"*20)
+    print("原始语句：",content)
+    print("正确知识：","||".join(line['kg']))
+    # try:
+    #   print("正确知识：",line.split("[KGS]")[1])
+    # except:
+    #   pass
+    # print(line.split("[KGS]"))
+    start_text=content+" [KGS] "
+    print(get_kg(start_text))
+    # pre_text=get(start_text)
+    # p="".join(pre_text)
+    # # p.split("[/KGS]")[0]
+    # print("预测结果",p.split("[/KGS]")[0])
+    # # print(get_ppl(start_text+"".join(pre_text)))

@@ -7,6 +7,19 @@ python3 train.py --epochs 1 --device cpu --batch_size 640 --gradient_accumulatio
 #33
 python3 train.py --epochs 1 --device cpu --batch_size 320 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 60 --pretrained_model  model/
 
+python3 train.py --epochs 1 --device cpu --batch_size 3 --gradient_accumulation 1 --lr 0.01 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 100   --pretrained_model  model/
+
+
+python3 train.py --raw --epochs 1 --device cpu --batch_size 64 --gradient_accumulation 1 --lr 0.001 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 100 --pretrained_model  model/
+
+
+
+
+python3 train.py --raw --epochs 1 --device cpu --tokenizer_path cache/vocab_user.txt --batch_size 32 --gradient_accumulation 1 --lr 0.001 --num_pieces 10 --depth 6  --full_attn_thres 128 --dim 128  --stride 100 
+
+
+
+
 
 
 

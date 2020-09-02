@@ -91,7 +91,8 @@ def get_kg(start_text,length=50):
   data=[]
 
   text=get(start_text,length)
-  # print("".join(text))
+  print("生成的文本：")
+  print("".join(text))
   pre_text="".join(text)
   pre_text=pre_text.split("[/KGS]")[0]
   # print(pre_text)
@@ -133,7 +134,7 @@ if __name__=='__main__':
     except:
       pass
     # print(line.split("[KGS]"))
-    start_text=line.split("[KGS]")[0]+" [KGS] "
+    start_text=line.split("[KGS]")[0]+" [NER] "
     print(get_kg(start_text))
     # pre_text=get(start_text)
     # p="".join(pre_text)

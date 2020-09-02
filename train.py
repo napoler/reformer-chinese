@@ -285,17 +285,20 @@ def main():
                 line = f.read().strip()
             tokens = line.split()
             tokens = [int(token) for token in tokens]
-            # print(len(tokens))
+            #  print(len(tokens))
             start_point = 0
             samples = []
             #划窗切割数据
             while start_point < len(tokens) - dim:
                 samples.append(tokens[start_point: start_point + dim])
-                # print(start_point, start_point + dim)
+                #  print(start_point, start_point + dim)
                 start_point += stride
             if start_point < len(tokens):
                 samples.append(tokens[len(tokens)-dim:])
             # 打乱数据，防止过度拟合
+#              for it in samples[:10]:
+                #  print(len(it))
+#
             random.shuffle(samples)
             for step in range(len(samples) // batch_size):  # drop last
                 # print(step)
