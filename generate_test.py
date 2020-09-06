@@ -122,20 +122,31 @@ def get_ppl(start_text):
 
 if __name__=='__main__':
   # args = parser.parse_args()
+  do=input("0 or 1:wq")
+  if int(do)==0:
+    pass
+  else:
+    start_text =input("words:")
+    print(get_kg(start_text))
+
   file="data/train.txt"
   fp=open(file,'r')
   lines = fp.readlines()
+
   for line in lines:
     print("\n"*3)
     print("###"*20)
+    print("line:",line)
     print("原始语句：",line.split("[KGS]")[0])
     try:
       print("正确知识：",line.split("[KGS]")[1])
     except:
       pass
     # print(line.split("[KGS]"))
-    start_text=line.split("[KGS]")[0]+" [NER] "
-    print(get_kg(start_text))
+    start_text=line.split("[KGS]")[0]
+    if len(start_text)>10:
+      print("start_text:",start_text)
+      print(get_kg(start_text))
     # pre_text=get(start_text)
     # p="".join(pre_text)
     # # p.split("[/KGS]")[0]

@@ -1,63 +1,32 @@
-from reformer_chinese import *
-from transformers import AlbertModel, BertTokenizer,AlbertConfig
 import torch
-from torch import randint
-import os
-from reformer_pytorch import ReformerLM
-from reformer_pytorch.generative_tools import TrainingWrapper
+from reformer_pytorch import ReformerEncDec
 
-# model,tokenizer=load_albert(path)
-def load_albert(path):
-    """
-    加载模型
-    """
-    vocab_file = os.path.join(path,'vocab.txt')
-    tokenizer = BertTokenizer.from_pretrained(vocab_file)
-    # print(tokenizer)
-    config = AlbertConfig.from_pretrained(path)
-    model = AlbertModel.from_pretrained(path,config=config)
-    return model,tokenizer
+DE_SEQ_LEN = 256
+EN_SEQ_LEN = 256
 
-# 加载albert
-path="model/albert_tiny/"
-albert_model,full_tokenizer=load_albert(path)
-
-
-
-# outputs = albert_model(batch_inputs)
-
-
-
-
-model = ReformerLM(
-    num_tokens= 20000,
-    dim = 1024,
-    depth = 12,
-    max_seq_len = 4096,
-    lsh_dropout = 0.1,
-    causal = True,
-    full_attn_thres = 1024
+enc_dec = ReformerEncDec(
+    dim = 128,
+    enc_num_tokens = 20000,
+    enc_depth = 6,
+    enc_max_seq_len = DE_SEQ_LEN,
+    dec_num_tokens = 20000,
+    dec_depth = 6,
+    dec_max_seq_len = EN_SEQ_LEN
 )
 
-# 0 is used for padding and no loss to be calculated on it
-model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
+train_seq_in = torch.randint(0, 20000, (1, DE_SEQ_LEN)).long()
+train_seq_out = torch.randint(0, 20000, (1, EN_SEQ_LEN)).long()
+input_mask = torch.ones(1, DE_SEQ_LEN).bool()
 
-# the wrapper can handle evenly packed sequences
-x_train = randint(0, 20000, (3, 357))
-
-# or if you have a list of uneven sequences, it will be padded for you
-x_train = [
-    randint(0, 20000, (120,)),
-    randint(0, 20000, (253,)),
-    randint(0, 20000, (846,))
-]
-
-# when training, set return_loss equal to True
-model.train()
-loss = model(x_train, return_loss = True)
+loss = enc_dec(train_seq_in, train_seq_out, return_loss = True, enc_input_mask = input_mask)
 loss.backward()
+# learn
 
-# when evaluating, just use the generate function, which will default to top_k sampling with temperature of 1.
-initial = torch.tensor([[0]]).long() # assume 0 is start token
-sample = model.generate(initial, 100, temperature=1., filter_thres = 0.9, eos_token = 1) # assume end token is 1, or omit and it will sample up to 100
-print(sample.shape) # (1, <=100) token ids
+# evaluate with the following
+eval_seq_in = torch.randint(0, 20000, (1, DE_SEQ_LEN)).long()
+eval_seq_out_start = torch.tensor([[0.]]).long() # assume 0 is id of start token
+print(eval_seq_in)
+print(eval_seq_out_start)
+samples = enc_dec.generate(eval_seq_in, eval_seq_out_start, seq_len = EN_SEQ_LEN, eos_token = 1) # assume 1 is id of stop token
+print(samples)
+print(samples.shape) # (1, <= 1024) decode the tokens

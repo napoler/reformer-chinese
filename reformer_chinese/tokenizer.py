@@ -5,3 +5,4 @@ def tokenizer_plus(vocab='cache/vocab_small_terry_ai.txt'):
     vocab_list=list(full_tokenizer.get_vocab())
     full_tokenizer=BertTokenizer(vocab,never_split=vocab_list)
     return full_tokenizer
+
