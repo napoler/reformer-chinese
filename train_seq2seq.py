@@ -281,7 +281,7 @@ def main():
 
 # def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_length_input,max_length_output):
     datas=[]
-    for item in build_files(data_path=raw_data_path, tokenized_data_path=tokenized_data_path, num_pieces=num_pieces,full_tokenizer=full_tokenizer, max_length_input=EN_SEQ_LEN,max_length_output=DE_SEQ_LEN):
+    for item in tqdm(build_files(data_path=raw_data_path, tokenized_data_path=tokenized_data_path, num_pieces=num_pieces,full_tokenizer=full_tokenizer, max_length_input=EN_SEQ_LEN,max_length_output=DE_SEQ_LEN)):
         datas.append(item)
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
@@ -297,7 +297,7 @@ def main():
         scheduler.load_state_dict(torch.load(scheduler_path))
 
     print("optimizer",optimizer)
-    loss_fn=nn.CrossEntropyLoss()
+    #loss_fn=nn.CrossEntropyLoss()
 
     
     print('starting training')
