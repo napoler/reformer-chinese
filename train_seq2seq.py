@@ -215,16 +215,16 @@ def main():
     # )
 
 
-    DE_SEQ_LEN = 128
-    EN_SEQ_LEN = 128
+    DE_SEQ_LEN = 256
+    EN_SEQ_LEN = 256
 
     model = ReformerEncDec(
-        dim = 128,
+        dim = 256,
         enc_num_tokens = full_tokenizer.vocab_size,
-        enc_depth = 6,
+        enc_depth = 12,
         enc_max_seq_len =EN_SEQ_LEN ,
         dec_num_tokens = full_tokenizer.vocab_size,
-        dec_depth = 6,
+        dec_depth = 12,
         dec_max_seq_len = DE_SEQ_LEN
     )
 
@@ -242,7 +242,12 @@ def main():
     else:   
         # pass
         model.train()
-    model.to('cuda')
+    #模型载入到cuda
+    if device=='cuda':
+
+        model.to('cuda')
+    else:
+        pass
 
     weight_decay=0.0
     # learning_rate=5e-5
