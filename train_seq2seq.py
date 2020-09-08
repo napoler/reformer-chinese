@@ -371,8 +371,8 @@ def main():
                 log_one={
                     "epoch":epoch+1,
                     "loss":loss.item(),
-                    "ste":overall_step,
-                    "Time":end-now
+                    "ste":overall_step
+                   
 
                 }
                 log_json.save([log_one])
