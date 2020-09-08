@@ -89,7 +89,7 @@ def main():
     #                     help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small_terry_ai.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train.json', type=str, required=False, help='原始训练语料')
-    parser.add_argument('--raw_only', default="store_true", help="只进行数据预处理")
+    parser.add_argument('--raw_only', action="store_true", help="只进行数据预处理")
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
