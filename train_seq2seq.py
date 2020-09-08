@@ -294,7 +294,7 @@ def main():
     else:
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
-    log_json=tkitJson.Json(tokenized_data_path+"log.json")
+    log_json=tkitJson.Json(output_dir+"log.json")
 
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
