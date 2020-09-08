@@ -89,6 +89,7 @@ def main():
     #                     help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small_terry_ai.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train.json', type=str, required=False, help='原始训练语料')
+    parser.add_argument('--raw_only', default="store_true" help="只进行数据预处理")
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
@@ -281,8 +282,19 @@ def main():
 
 # def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_length_input,max_length_output):
     datas=[]
-    for item in tqdm(build_files(data_path=raw_data_path, tokenized_data_path=tokenized_data_path, num_pieces=num_pieces,full_tokenizer=full_tokenizer, max_length_input=EN_SEQ_LEN,max_length_output=DE_SEQ_LEN)):
-        datas.append(item)
+    if args.raw:
+
+        for item in tqdm(build_files(data_path=raw_data_path, tokenized_data_path=tokenized_data_path, num_pieces=num_pieces,full_tokenizer=full_tokenizer, max_length_input=EN_SEQ_LEN,max_length_output=DE_SEQ_LEN)):
+            datas.append(item)
+        f=open(tokenized_data_path+"data.pk","wb")
+        pickle.dump(datas,f)
+        #只进行数据预处理
+        if args.raw_only:
+            exit()
+    else:
+        f=open(tokenized_data_path+"data.pk","rb")
+        datas=pickle.load(f)
+
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
     # t_total=3/1*3
