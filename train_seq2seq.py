@@ -294,6 +294,7 @@ def main():
     else:
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
+    log_json=tkitFile.Json(tokenized_data_path+"log.json")
 
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
@@ -367,9 +368,17 @@ def main():
                 end = datetime.now()
                 # print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
                 print("epoch:",epoch + 1," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
+                log_one={
+                    "epoch":epoch+1,
+                    "loss":loss.item(),
+                    "ste":overall_step,
+                    "Time":end-now
+
+                }
+                log_json.save([log_one])
             overall_step+=1
             gradient_accumulation_run=gradient_accumulation_run+1
-
+            
                 # scheduler.step()
                 # model.zero_grad()
             # end = datetime.now()
