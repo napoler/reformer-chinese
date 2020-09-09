@@ -71,20 +71,29 @@ model = ReformerEncDec(
 
 model.load_state_dict(torch.load(model_path))
 model.to("cuda")
-start_text=input("输入带提取的句子：")
-sentA_ids=full_tokenizer.encode_plus(start_text,max_length=EN_SEQ_LEN,pad_to_max_length=True)['input_ids']
-# evaluate with the following
-# eval_seq_in = torch.randint(0, 20000, (1, DE_SEQ_LEN)).long()
-eval_seq_in = torch.tensor([sentA_ids]).long().to("cuda")
-eval_seq_out_start = torch.tensor([[0.]]).long().to("cuda") # assume 0 is id of start token
-print(eval_seq_in)
-print(eval_seq_out_start)
-samples = model.generate(eval_seq_in, eval_seq_out_start, seq_len = DE_SEQ_LEN, eos_token = 1) # assume 1 is id of stop token
-print(samples)
-print(samples.shape) # (1, <= 1024) decode the tokens
+# start_text=input("输入带提取的句子：")
+Tjson=tkitJson.Json("data/train.json")
+for item in Tjson.load():
+    print("#"*10)
+    start_text=item["sentenceA"]
+    sentA_ids=full_tokenizer.encode_plus(start_text,max_length=EN_SEQ_LEN,pad_to_max_length=True)['input_ids']
+    # evaluate with the following
+    # eval_seq_in = torch.randint(0, 20000, (1, DE_SEQ_LEN)).long()
+    eval_seq_in = torch.tensor([sentA_ids]).long().to("cuda")
+    eval_seq_out_start = torch.tensor([[0.]]).long().to("cuda") # assume 0 is id of start token
 
+    eval_seq_out_start=full_tokenizer.encode_plus(" [NER] ",max_length=EN_SEQ_LEN,pad_to_max_length=True)['input_ids'][0:2]
+    # print(eval_seq_out_start)
+    eval_seq_out_start = torch.tensor([eval_seq_out_start]).long().to("cuda") # assume 0 is id of start token
 
-text=[]
-for it in tokenizer.convert_ids_to_tokens(samples.tolist()[0]):
-    text.append(it.replace("##",''))
-print("".join(text))
+    # print(eval_seq_in)
+    # print(eval_seq_out_start)
+    samples = model.generate(eval_seq_in, eval_seq_out_start, seq_len = DE_SEQ_LEN, eos_token = 1) # assume 1 is id of stop token
+    # print(samples)
+    # print(samples.shape) # (1, <= 1024) decode the tokens
+    print("")
+    print(item)
+    text=[]
+    for it in tokenizer.convert_ids_to_tokens(samples.tolist()[0]):
+        text.append(it.replace("##",''))
+    print("".join(text))
