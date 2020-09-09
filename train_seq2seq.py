@@ -217,7 +217,7 @@ def main():
 
 
     DE_SEQ_LEN = 256
-    EN_SEQ_LEN = 128
+    EN_SEQ_LEN = 256
 
     model = ReformerEncDec(
         dim = 128,
