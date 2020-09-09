@@ -60,12 +60,12 @@ DE_SEQ_LEN = 256
 EN_SEQ_LEN = 256
 
 model = ReformerEncDec(
-    dim = 256, 
+    dim = 128, 
     enc_num_tokens = full_tokenizer.vocab_size,
-    enc_depth = 12,
+    enc_depth = 6,
     enc_max_seq_len = DE_SEQ_LEN,
     dec_num_tokens =full_tokenizer.vocab_size,
-    dec_depth = 12,
+    dec_depth = 6,
     dec_max_seq_len = EN_SEQ_LEN
 )
 
@@ -91,9 +91,13 @@ for item in Tjson.load():
     samples = model.generate(eval_seq_in, eval_seq_out_start, seq_len = DE_SEQ_LEN, eos_token = 1) # assume 1 is id of stop token
     # print(samples)
     # print(samples.shape) # (1, <= 1024) decode the tokens
-    print("")
+    
     print(item)
+    print("--"*20)
     text=[]
     for it in tokenizer.convert_ids_to_tokens(samples.tolist()[0]):
+
+        if it=="[PAD]":
+            continue
         text.append(it.replace("##",''))
     print("".join(text))
