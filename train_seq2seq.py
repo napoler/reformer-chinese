@@ -219,7 +219,7 @@ def main():
     DE_SEQ_LEN = 96
     EN_SEQ_LEN = 96
     model = ReformerEncDec(
-        dim = 128,
+        dim = 96,
         enc_num_tokens = full_tokenizer.vocab_size,
         enc_depth = 6,
         enc_max_seq_len =EN_SEQ_LEN ,
