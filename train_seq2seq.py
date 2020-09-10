@@ -331,8 +331,8 @@ def main():
             train_seq_out=[]
             input_mask=[]
             for batchA,batchB in batch:
-                print(len(batchA))
-                print(len(batchB))
+                # print(len(batchA))
+                # print(len(batchB))
                 train_seq_in.append(batchA)
                 train_seq_out.append(batchB)
                 input_mask.append([1]*len(batchA))
