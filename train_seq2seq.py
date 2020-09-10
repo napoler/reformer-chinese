@@ -216,10 +216,10 @@ def main():
     # )
 
 
-    DE_SEQ_LEN = 96
-    EN_SEQ_LEN = 96
+    DE_SEQ_LEN = 256
+    EN_SEQ_LEN = 256
     model = ReformerEncDec(
-        dim = 96,
+        dim = 128,
         enc_num_tokens = full_tokenizer.vocab_size,
         enc_depth = 6,
         enc_max_seq_len =EN_SEQ_LEN ,
@@ -331,6 +331,8 @@ def main():
             train_seq_out=[]
             input_mask=[]
             for batchA,batchB in batch:
+                print(len(batchA))
+                print(len(batchB))
                 train_seq_in.append(batchA)
                 train_seq_out.append(batchB)
                 input_mask.append([1]*len(batchA))
