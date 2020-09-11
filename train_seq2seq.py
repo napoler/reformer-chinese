@@ -296,7 +296,7 @@ def main():
         datas=pickle.load(f)
     log_json=tkitJson.Json(output_dir+"log.json")
     #小数据训练
-    datas=datas[:1500]
+    # datas=datas[:1500]
 
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
