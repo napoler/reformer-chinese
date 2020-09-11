@@ -99,7 +99,7 @@ def main():
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=500, type=int, required=False, help=' 向前跨越的长度')
-    parser.add_argument('--dim', default=1024, type=int, required=False, help='训练时取训练数据的窗口步长单个样本长度')
+    parser.add_argument('--dim', default=128, type=int, required=False, help='训练时取训练数据的窗口步长单个样本长度')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
@@ -111,7 +111,8 @@ def main():
     # parser.add_argument('--writer_dir', default='tensorboard_summary/', type=str, required=False, help='Tensorboard路径')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     parser.add_argument('--bpe_token', action='store_true', help='subword')
-
+    parser.add_argument('--enc_depth',default=6, type=int, help="enc_depth")
+    parser.add_argument('--dec_depth',default=6, type=int, help="dec_depth")
     # parser.add_argument('--dim', default=1024, type=int, required=False, help='dim')
     parser.add_argument('--depth', default=12, type=int, required=False, help='depth')
     parser.add_argument('--full_attn_thres', default=1024, type=int, required=False, help='full_attn_thres')
@@ -219,12 +220,12 @@ def main():
     DE_SEQ_LEN = 256
     EN_SEQ_LEN = 256
     model = ReformerEncDec(
-        dim = 128,
+        dim = args.dim,
         enc_num_tokens = full_tokenizer.vocab_size,
-        enc_depth = 6,
+        enc_depth = args.enc_depth,
         enc_max_seq_len =EN_SEQ_LEN ,
         dec_num_tokens = full_tokenizer.vocab_size,
-        dec_depth = 6,
+        dec_depth = args.dec_depth,
         dec_max_seq_len = DE_SEQ_LEN
     )
 
@@ -294,6 +295,8 @@ def main():
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
     log_json=tkitJson.Json(output_dir+"log.json")
+    #小数据训练
+    datas=datas[:1500]
 
 
     total_steps = len(datas)*epochs/batch_size /gradient_accumulation
