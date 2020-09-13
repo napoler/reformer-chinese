@@ -198,25 +198,18 @@ def main():
     output_model_path=os.path.join(output_dir, 'model.pt')
     output_optimizer_path= os.path.join(output_dir, 'optimizer.pt')
     output_scheduler_path=os.path.join(output_dir, 'scheduler.pt')
+
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    # if raw:
-    #     print('building files')
-    #     build_files(data_path=raw_data_path, tokenized_data_path=tokenized_data_path, num_pieces=num_pieces,
-    #                 full_tokenizer=full_tokenizer, min_length=min_length)
-    #     print('files built')
 
-    # model = ReformerLM(
-    #     num_tokens= full_tokenizer.vocab_size,
-    #     dim = dim, #窗口长度
-    #     depth = args.depth,
-    #     max_seq_len =  args.max_seq_len,
-    #     lsh_dropout = 0.1,
-    #     causal = True,
-    #     full_attn_thres = args.full_attn_thres
-    # )
+    weight_decay=0.0
+    adam_epsilon=1e-8
+    max_grad_norm=1.0
+    max_steps=-1
 
+    logging_steps=1000
+    save_steps=10000
 
     DE_SEQ_LEN = 256
     EN_SEQ_LEN = 256
@@ -232,34 +225,22 @@ def main():
 
 
 
-    # 0 is used for padding and no loss to be calculated on it
-    # if device=='cuda':
-    #     model = TrainingWrapper(model, ignore_index = 0, pad_value = 0).to('cuda')
-    # else:
-    #     model = TrainingWrapper(model, ignore_index = 0, pad_value = 0)
-
+    # 加载模型
     if os.path.isfile(model_path):
         # if so, load them
         model.load_state_dict(torch.load(model_path))
     else:   
         # pass
         model.train()
+
     #模型载入到cuda
     if device=='cuda':
-
         model.to('cuda')
     else:
         pass
 
-    weight_decay=0.0
-    # learning_rate=5e-5
-    adam_epsilon=1e-8
-    # warmup_steps=0
-    max_grad_norm=1.0
-    max_steps=-1
 
-    logging_steps=1000
-    save_steps=10000
+
     no_decay = ['bias', 'LayerNorm.weight']
     optimizer_grouped_parameters = [
         {
@@ -272,16 +253,7 @@ def main():
         }
     ]
 
-
-    # full_len = 0
-    # print('calculating total steps')
-    # for i in tqdm(range(num_pieces)):
-    #     with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
-    #         full_len += len([int(item) for item in f.read().strip().split()])
-    # total_steps = int(full_len / stride * epochs / batch_size / gradient_accumulation)
-    # print('total steps = {}'.format(total_steps))
-
-# def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_length_input,max_length_output):
+    # 加载数据
     datas=[]
     if args.raw:
 
@@ -296,13 +268,10 @@ def main():
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
     log_json=tkitJson.Json(output_dir+"log.json")
-    #小数据训练
-    # datas=datas[:1500]
 
-
+    # 总步数
     total_steps =math.ceil( len(datas))*(epochs+1)/batch_size /gradient_accumulation
-    # t_total=3/1*3
-    # optimizer = AdamW(model.parameters(), lr=lr, correct_bias=True)
+    #优化器
     optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=adam_epsilon)
     scheduler = get_linear_schedule_with_warmup( optimizer=optimizer, num_warmup_steps=warmup_steps,num_training_steps=total_steps)
 
@@ -313,12 +282,12 @@ def main():
         scheduler.load_state_dict(torch.load(scheduler_path))
 
     print("optimizer",optimizer)
-    #loss_fn=nn.CrossEntropyLoss()
 
-    
+
+    #小数据训练
+    # datas=datas[:1500]  
     print('starting training')
     overall_step = 0
-    running_loss = 0
     gradient_accumulation_run=0
     for epoch in range(epochs):
         print('epoch {}'.format(epoch + 1))
@@ -368,31 +337,22 @@ def main():
                 optimizer.step()
                 scheduler.step()        # update parameters of net
                 optimizer.zero_grad()        # update parameters of net
-                # scheduler.zero_grad()        # update parameters of net
-                # model.zero_grad()   # reset gradient
                 end = datetime.now()
                 # print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
                 print("epoch:",epoch + 1," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
                 log_one={
                     "epoch":epoch+1,
                     "loss":loss.item(),
-                    "ste":overall_step
-                   
-
+                    "step":overall_step
                 }
                 log_json.save([log_one])
             overall_step+=1
             gradient_accumulation_run=gradient_accumulation_run+1
             
-                # scheduler.step()
-                # model.zero_grad()
-            # end = datetime.now()
-            # print("one piece:",end-now," s")
-
             torch.save(model.state_dict(),  output_model_path)
             torch.save(optimizer.state_dict(), output_optimizer_path)
             torch.save(scheduler.state_dict(),  output_scheduler_path)
-    model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
+    # model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
     torch.save(model.cpu().state_dict(), model_cpu_path)
 if __name__ == '__main__':
     main()
