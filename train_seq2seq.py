@@ -23,6 +23,7 @@ from reformer_pytorch.generative_tools import TrainingWrapper
 from reformer_chinese import *
 import tkitJson
 import shutil
+import math
 def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_length_input,max_length_output):
     print(data_path)
     Tjson=tkitJson.Json(data_path)
@@ -299,7 +300,7 @@ def main():
     # datas=datas[:1500]
 
 
-    total_steps = len(datas)*epochs/batch_size /gradient_accumulation
+    total_steps =math.ceil( len(datas))*(epochs+1)/batch_size /gradient_accumulation
     # t_total=3/1*3
     # optimizer = AdamW(model.parameters(), lr=lr, correct_bias=True)
     optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=adam_epsilon)

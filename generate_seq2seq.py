@@ -60,12 +60,12 @@ DE_SEQ_LEN = 256
 EN_SEQ_LEN = 256
 
 model = ReformerEncDec(
-    dim = 128, 
+    dim = 256, 
     enc_num_tokens = full_tokenizer.vocab_size,
-    enc_depth = 6,
+    enc_depth = 12,
     enc_max_seq_len = DE_SEQ_LEN,
     dec_num_tokens =full_tokenizer.vocab_size,
-    dec_depth = 6,
+    dec_depth = 12,
     dec_max_seq_len = EN_SEQ_LEN
 )
 
@@ -82,7 +82,11 @@ for item in Tjson.load():
     eval_seq_in = torch.tensor([sentA_ids]).long().to("cuda")
     eval_seq_out_start = torch.tensor([[0.]]).long().to("cuda") # assume 0 is id of start token
 
-    eval_seq_out_start=full_tokenizer.encode_plus(" [NER] ",max_length=EN_SEQ_LEN,pad_to_max_length=True)['input_ids'][0:2]
+
+    # 定义输出开始词语
+    out_start_text=item["sentenceB"].split(" [KGS]")[0]
+    # out_start_text="[NER]"
+    eval_seq_out_start=full_tokenizer.encode_plus(out_start_text,pad_to_max_length=False)['input_ids'][:-1]
     # print(eval_seq_out_start)
     eval_seq_out_start = torch.tensor([eval_seq_out_start]).long().to("cuda") # assume 0 is id of start token
 
@@ -99,5 +103,8 @@ for item in Tjson.load():
 
         if it=="[PAD]":
             continue
+        elif it=="[/KGS]":
+            text.append(it.replace("##",''))
+            break
         text.append(it.replace("##",''))
     print("".join(text))
