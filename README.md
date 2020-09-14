@@ -23,5 +23,7 @@ python3 train.py  --epochs 2 --device cpu --batch_size 4 --gradient_accumulation
 
 python3 train_seq2seq.py --epochs 2 --device cuda --batch_size 64 --gradient_accumulation 2 --lr 0.001 --num_pieces 10 --dim 128 --enc_depth 12 --dec_depth 12
 
+python3 train_seq2seq.py --epochs 2 --device cpu --batch_size 12 --gradient_accumulation 2 --lr 0.001 --dim 128 --enc_depth 3 --dec_depth 6 --db_loss --password 1x7HEzxM
+
 ## 测试生成
 python generate.py

@@ -24,6 +24,8 @@ from reformer_chinese import *
 import tkitJson
 import shutil
 import math
+
+from db import DB
 def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_length_input,max_length_output):
     print(data_path)
     Tjson=tkitJson.Json(data_path)
@@ -36,48 +38,6 @@ def build_files(data_path, tokenized_data_path, num_pieces, full_tokenizer, max_
         sentB_ids=full_tokenizer.encode_plus(item['sentenceB'],max_length=max_length_output,pad_to_max_length=True)['input_ids']
         yield sentA_ids,sentB_ids
 
-    #     print(item['sentenceB'])
-
-
-    # # with open(data_path, 'r', encoding='utf8') as f:
-    # #     print('reading lines')
-    # #     lines = json.load(f)
-    # #     new_lines=[]
-
-    # #     lines = [line.replace('\n', ' [SEP] ') for line in lines]  # 用[SEP]表示换行, 段落之间使用SEP表示段落结束
-    # #     for line in lines:
-    # #         if line in[' [SEP] ']:
-    # #             # print("eee")
-    # #             pass
-    # #         else:
-    # #             new_lines.append(line)
-    # #     lines=new_lines
-    # all_len = len(lines)
-    # print(all_len)
-    # exit()
-    # if not os.path.exists(tokenized_data_path):
-    #     os.mkdir(tokenized_data_path)
-    # for i in tqdm(range(num_pieces)):
-    #     sublines = lines[all_len // num_pieces * i: all_len // num_pieces * (i + 1)]
-    #     # print(sublines)
-    #     if i == num_pieces - 1:
-    #         sublines.extend(lines[all_len // num_pieces * (i + 1):])  # 把尾部例子添加到最后一个piece
-    #     sublines = [full_tokenizer.tokenize(line) for line in tqdm(sublines) if
-    #                 len(line) > min_length]  # 只考虑长度超过min_length的句子
-    #     # print(sublines)
-    #     sublines = [full_tokenizer.convert_tokens_to_ids(line) for line in tqdm(sublines)]
-    #     full_line = []
-    #     for subline in sublines:
-
-    #         full_line.append(full_tokenizer.convert_tokens_to_ids('[MASK]'))  # 文章开头添加MASK表示文章开始
-    #         full_line.extend(subline)
-    #         full_line.append(full_tokenizer.convert_tokens_to_ids('[CLS]'))  # 文章之间添加CLS表示文章结束
-    #     with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'w') as f:
-    #         for id in full_line:
-    #             f.write(str(id) + ' ')
-    # print('finish')
-
-# sentence_0 = "你是谁啊"
 def auto_encode(sentence_0,tokenizer):
   # sentence_1 = "我是谁啊"
   sentence_1=None
@@ -120,7 +80,8 @@ def main():
     parser.add_argument('--max_seq_len', default=4096, type=int, required=False, help='max_seq_len')
     # parser.add_argument('--encoder_json', default="tokenizations/encoder.json", type=str, help="encoder.json")
     # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
-
+    parser.add_argument('--db_loss', action='store_true', help='是否是对loss追踪')
+    parser.add_argument('--password',type=str,help="远程数据库密码")
     args = parser.parse_args()
     full_tokenizer=tokenizer_plus(args.tokenizer_path)
     config_file=os.path.join(args.output_dir,'config.json')
@@ -148,15 +109,6 @@ def main():
 
     os.environ["CUDA_VISIBLE_DEVICES"] = '0,1,2,3' # 此处设置程序使用哪些显卡
 
-    # model_config = transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
-    # print('config:\n' + model_config.to_json_string())
-
-    # dim = model_config.dim
-    # if args.bpe_token:
-    #     full_tokenizer = get_encoder(args.encoder_json, args.vocab_bpe)
-    # else:
-    # full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
-    # full_tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
 
     # full_tokenizer.max_len = dim
 
@@ -289,6 +241,8 @@ def main():
     print('starting training')
     overall_step = 0
     gradient_accumulation_run=0
+    Db=DB(password=args.password)
+    Db.clear_col()
     for epoch in range(epochs):
         print('epoch {}'.format(epoch + 1))
         now = datetime.now()
@@ -327,7 +281,7 @@ def main():
             # print(input_mask.size())
             loss = model(train_seq_in, train_seq_out, return_loss = True, enc_input_mask = input_mask)
             # loss = model(batch_inputs, return_loss = True)
-            print("loss",loss.item())
+            # print("loss",loss.item())
             # exit()
             loss = loss/gradient_accumulation   
             loss.backward()
@@ -340,11 +294,15 @@ def main():
                 end = datetime.now()
                 # print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
                 print("epoch:",epoch + 1," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
+
                 log_one={
                     "epoch":epoch+1,
                     "loss":loss.item(),
                     "step":overall_step
                 }
+                if args.db_loss:
+                    print("log_one",log_one)
+                    Db.add_one(log_one)
                 log_json.save([log_one])
             overall_step+=1
             gradient_accumulation_run=gradient_accumulation_run+1
