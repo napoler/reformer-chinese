@@ -49,4 +49,4 @@ if __name__ == '__main__':
     plt.ylabel("loss") #Y轴标签
     plt.title("run loss") #标题 
     plt.show()  #显示图
-    # plt.savefig("easyplot.jpg")
+    plt.savefig("data/plot.jpg")
