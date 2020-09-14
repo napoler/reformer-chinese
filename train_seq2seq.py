@@ -222,7 +222,7 @@ def main():
     log_json=tkitJson.Json(output_dir+"log.json")
 
     # 总步数
-    total_steps =math.ceil( len(datas))*(epochs+1)/batch_size /gradient_accumulation
+    total_steps =math.ceil( len(datas)*(epochs+1)/batch_size /gradient_accumulation)
     #优化器
     optimizer = AdamW(optimizer_grouped_parameters, lr=lr, eps=adam_epsilon)
     scheduler = get_linear_schedule_with_warmup( optimizer=optimizer, num_warmup_steps=warmup_steps,num_training_steps=total_steps)
