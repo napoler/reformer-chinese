@@ -292,8 +292,9 @@ def main():
                 scheduler.step()        # update parameters of net
                 optimizer.zero_grad()        # update parameters of net
                 end = datetime.now()
+                overall_step+=1
                 # print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
-                print("epoch:",epoch + 1," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
+                print("epoch:",epoch + 1," step:",overall_step,'/',total_steps," step完成比例:",(overall_step)/total_steps," loss:",loss.item(),'Time',end-now)
 
                 log_one={
                     "epoch":epoch+1,
@@ -301,10 +302,10 @@ def main():
                     "step":overall_step
                 }
                 if args.db_loss:
-                    print("log_one",log_one)
+                    # print("log_one",log_one)
                     Db.add_one(log_one)
                 log_json.save([log_one])
-            overall_step+=1
+    
             gradient_accumulation_run=gradient_accumulation_run+1
             
             torch.save(model.state_dict(),  output_model_path)
