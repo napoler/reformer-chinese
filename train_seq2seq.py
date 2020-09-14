@@ -163,7 +163,7 @@ def main():
     logging_steps=1000
     save_steps=10000
 
-    DE_SEQ_LEN = 128
+    DE_SEQ_LEN = 256
     EN_SEQ_LEN = 256
     model = ReformerEncDec(
         dim = args.dim,
