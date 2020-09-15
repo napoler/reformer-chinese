@@ -59,6 +59,7 @@ def main():
     parser.add_argument('--lr', default=1e-8, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=200, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1, type=int, required=False, help='多少步汇报一次loss')
+    parser.add_argument('--max_data',default=0,type=int, required=False, help='输入限制的最多数据集量')
     parser.add_argument('--stride', default=500, type=int, required=False, help=' 向前跨越的长度')
     parser.add_argument('--dim', default=128, type=int, required=False, help='训练时取训练数据的窗口步长单个样本长度')
     parser.add_argument('--gradient_accumulation', default=5, type=int, required=False, help='梯度积累')
@@ -219,6 +220,8 @@ def main():
     else:
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
+    if args.max_data>0:
+        data=datas[:args.max_data]
     log_json=tkitJson.Json(output_dir+"log.json")
 
     # 总步数
