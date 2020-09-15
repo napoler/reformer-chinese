@@ -35,18 +35,20 @@ if __name__ == '__main__':
     password=input("password:")
     Db=DB(password=password)
     # Db.add_one({'xx':11})
-    x=[]
-    y=[]
-    for i,it in enumerate( Db.get_col()):
-        print(it)
-        # x.append(i)
-        x.append(it['step'])
-        y.append(it['loss'])
+    while True:
+        x=[]
+        y=[]
+        for i,it in enumerate( Db.get_col()):
+            print(it)
+            # x.append(i)
+            x.append(it['step'])
+            y.append(it['loss'])
 
-    plt.figure()
-    plt.plot(x,y)
-    plt.xlabel("step") #X轴标签
-    plt.ylabel("loss") #Y轴标签
-    plt.title("run loss") #标题 
-    plt.show()  #显示图
-    plt.savefig("data/plot.jpg")
+        plt.figure()
+        plt.plot(x,y)
+        plt.xlabel("step") #X轴标签
+        plt.ylabel("loss") #Y轴标签
+        plt.title("run loss") #标题 
+        plt.show()  #显示图
+        plt.savefig("data/plot.jpg")
+        time.sleep(10)

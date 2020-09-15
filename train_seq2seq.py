@@ -243,10 +243,11 @@ def main():
     gradient_accumulation_run=0
     Db=DB(password=args.password)
     Db.clear_col()
+    all_time=[]
     for epoch in range(epochs):
         print('epoch {}'.format(epoch + 1))
         now = datetime.now()
-        print('time: {}'.format(now))
+        # print('time: {}'.format(now))
         # 进行随机打乱
         random.shuffle(datas)
         samples=datas
@@ -294,7 +295,11 @@ def main():
                 end = datetime.now()
                 overall_step+=1
                 # print("epoch:",epoch + 1," piece_num:",piece_num,'/',num_pieces," step:",overall_step+1,'/',total_steps," step完成比例:",(overall_step+1)/total_steps," loss:",loss.item(),'Time',end-now)
-                print("epoch:",epoch + 1," step:",overall_step,'/',total_steps," step完成比例:",(overall_step)/total_steps," loss:",loss.item(),'Time',end-now)
+                # all_time.append(end-now)
+                pre_time=(end-now)*(total_steps-overall_step)
+                
+                print("epoch:",epoch + 1," step:",overall_step,'/',total_steps," step完成比例:",(overall_step)/total_steps," loss:",loss.item(),'Time',end-now,"剩余时间:",pre_time)
+
 
                 log_one={
                     "epoch":epoch+1,
