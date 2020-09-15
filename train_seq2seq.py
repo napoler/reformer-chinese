@@ -255,7 +255,7 @@ def main():
         # 进行随机打乱
         random.shuffle(datas)
         samples=datas
-        for step in range(len(samples) // batch_size):  # drop last
+        for step in tqdm(range(len(samples) // batch_size)):  # drop last
 
             batch = samples[step * batch_size: (step + 1) * batch_size]
 
