@@ -221,7 +221,8 @@ def main():
         f=open(tokenized_data_path+"data.pk","rb")
         datas=pickle.load(f)
     if args.max_data>0:
-        data=datas[:args.max_data]
+        datas=datas[:args.max_data]
+    print("总数据条数：",datas)
     log_json=tkitJson.Json(output_dir+"log.json")
 
     # 总步数
