@@ -222,7 +222,7 @@ def main():
         datas=pickle.load(f)
     if args.max_data>0:
         datas=datas[:args.max_data]
-    print("总数据条数：",datas)
+    print("总数据条数：",len(datas))
     log_json=tkitJson.Json(output_dir+"log.json")
 
     # 总步数
