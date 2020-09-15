@@ -321,7 +321,7 @@ def main():
             torch.save(optimizer.state_dict(), output_optimizer_path)
             torch.save(scheduler.state_dict(),  output_scheduler_path)
     # model_cpu_path=os.path.join(output_dir, 'model_cpu.pt')
-    torch.save(model.cpu().state_dict(), model_cpu_path)
+    #torch.save(model.cpu().state_dict(), model_cpu_path)
 if __name__ == '__main__':
     main()
 
