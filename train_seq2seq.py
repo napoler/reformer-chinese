@@ -298,7 +298,7 @@ def main():
                 # all_time.append(end-now)
                 pre_time=(end-now)*(total_steps-overall_step)
                 
-                print("epoch:",epoch + 1," step:",overall_step,'/',total_steps," step完成比例:",(overall_step)/total_steps," loss:",loss.item(),'Time',end-now,"剩余时间:",pre_time)
+                print("epoch:",epoch + 1," step:",overall_step,'/',total_steps," step完成比例:",(overall_step)/total_steps," loss:",loss.item(),"剩余时间:",pre_time)
 
 
                 log_one={
@@ -310,7 +310,7 @@ def main():
                     # print("log_one",log_one)
                     Db.add_one(log_one)
                 log_json.save([log_one])
-    
+                now = datetime.now()   
             gradient_accumulation_run=gradient_accumulation_run+1
             
             torch.save(model.state_dict(),  output_model_path)
