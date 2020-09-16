@@ -40,13 +40,13 @@ def auto_encode(sentence_0):
 
 
 
-DE_SEQ_LEN = 1024
-EN_SEQ_LEN = 4096
+DE_SEQ_LEN = 256
+EN_SEQ_LEN = 256
 
 model = ReformerEncDec(
-    dim = 384, 
+    dim = 128, 
     enc_num_tokens = full_tokenizer.vocab_size,
-    enc_depth = 12,
+    enc_depth = 6,
     enc_max_seq_len =EN_SEQ_LEN ,
     dec_num_tokens =full_tokenizer.vocab_size,
     dec_depth = 12,
