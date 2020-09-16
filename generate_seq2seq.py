@@ -14,7 +14,7 @@ from tkitMatch import Match
 
 
 # pretrained_weights = 'cache/vocab_small_terry_ai.txt'
-device='cpu'
+device='cuda'
 output_dir='model'
 
 pretrained_weights=os.path.join(output_dir,'vocab.txt')
