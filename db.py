@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 class DB:
     def __init__(self,password="111",db_name="run_log"):
         client = pymongo.MongoClient("mongodb://terry:"+password+"@cluster0-shard-00-00.b434c.mongodb.net:27017,cluster0-shard-00-01.b434c.mongodb.net:27017,cluster0-shard-00-02.b434c.mongodb.net:27017/"+db_name+"?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority")
-        self.db = client.run_log
+        self.db = client[db_name]
         # print(db)
     def add_one(self,data,name="log"):
         """
@@ -32,8 +32,9 @@ class DB:
             # print((it))
             yield it
 if __name__ == '__main__':
+    db_name=input("db_name:")
     password=input("password:")
-    Db=DB(password=password)
+    Db=DB(password=password,db_name=db_name)
     # Db.add_one({'xx':11})        
     plt.figure()
     plt.ion()
