@@ -83,6 +83,7 @@ def main():
     # parser.add_argument('--vocab_bpe', default="tokenizations/vocab.bpe", type=str, help="vocab.bpe")
     parser.add_argument('--db_loss', action='store_true', help='是否是对loss追踪')
     parser.add_argument('--password',type=str,help="远程数据库密码")
+    parser.add_argument('--db_name',type=str,default="run_log",help="记录日志数据库")
     args = parser.parse_args()
     full_tokenizer=tokenizer_plus(args.tokenizer_path)
     config_file=os.path.join(args.output_dir,'config.json')
@@ -245,7 +246,7 @@ def main():
     print('starting training')
     overall_step = 0
     gradient_accumulation_run=0
-    Db=DB(password=args.password)
+    Db=DB(password=args.password,db_name=db_name)
     Db.clear_col()
     all_time=[]
     for epoch in range(epochs):

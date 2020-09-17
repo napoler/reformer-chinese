@@ -34,7 +34,9 @@ class DB:
 if __name__ == '__main__':
     password=input("password:")
     Db=DB(password=password)
-    # Db.add_one({'xx':11})
+    # Db.add_one({'xx':11})        
+    plt.figure()
+    plt.ion()
     while True:
         x=[]
         y=[]
@@ -44,7 +46,7 @@ if __name__ == '__main__':
             x.append(it['step'])
             y.append(it['loss'])
 
-        plt.figure()
+
         plt.plot(x,y)
         plt.xlabel("step") #X轴标签
         plt.ylabel("loss") #Y轴标签
