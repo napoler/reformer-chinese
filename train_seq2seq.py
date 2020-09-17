@@ -246,7 +246,7 @@ def main():
     print('starting training')
     overall_step = 0
     gradient_accumulation_run=0
-    Db=DB(password=args.password,db_name=db_name)
+    Db=DB(password=args.password,db_name=args.db_name)
     Db.clear_col()
     all_time=[]
     for epoch in range(epochs):
