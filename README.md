@@ -1,6 +1,10 @@
 # reformer-chinese
 reformer-pytorch中文版本
 
+新版本转移到
+
+https://github.com/napoler/reformer-chinese-pytorch
+
 
 
 
