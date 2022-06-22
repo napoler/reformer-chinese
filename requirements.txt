@@ -1,5 +1,5 @@
 transformers==2.5.1
-numpy==1.18.1
+numpy==1.22.0
 torch==1.4.0
 reformer-pytorch==0.15.3
 tqdm==4.43.0
